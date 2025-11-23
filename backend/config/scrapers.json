@@ -1,0 +1,81 @@
+{
+  "amazon": {
+    "version": "1.0.0",
+    "selectors": {
+      "search_url": "https://www.amazon.com/s?k={query}",
+      "product_container": "[data-component-type='s-search-result']",
+      "title": "h2 a span",
+      "price": ".a-price .a-offscreen",
+      "image": ".s-image",
+      "link": "h2 a",
+      "availability": ".a-color-state, .a-color-success"
+    },
+    "requires_js": true
+  },
+  "ebay": {
+    "version": "1.0.0",
+    "selectors": {
+      "search_url": "https://www.ebay.com/sch/i.html?_nkw={query}",
+      "product_container": ".s-item",
+      "title": ".s-item__title",
+      "price": ".s-item__price",
+      "image": ".s-item__image img",
+      "link": ".s-item__link",
+      "availability": ".s-item__availability"
+    },
+    "requires_js": false
+  },
+  "walmart": {
+    "version": "1.0.0",
+    "selectors": {
+      "search_url": "https://www.walmart.com/search?q={query}",
+      "product_container": "[data-testid='item-stack']",
+      "title": "[data-automation-id='product-title']",
+      "price": "[itemprop='price']",
+      "image": "img[data-testid='product-image']",
+      "link": "a[data-testid='product-title']",
+      "availability": "[data-testid='product-availability']"
+    },
+    "requires_js": true
+  },
+  "target": {
+    "version": "1.0.0",
+    "selectors": {
+      "search_url": "https://www.target.com/s?searchTerm={query}",
+      "product_container": "[data-test='product-card']",
+      "title": "[data-test='product-title']",
+      "price": "[data-test='product-price']",
+      "image": "img[data-test='product-image']",
+      "link": "a[data-test='product-title']",
+      "availability": "[data-test='product-availability']"
+    },
+    "requires_js": true
+  },
+  "bestbuy": {
+    "version": "1.0.0",
+    "selectors": {
+      "search_url": "https://www.bestbuy.com/site/searchpage.jsp?st={query}",
+      "product_container": ".sku-item",
+      "title": ".sku-title h4 a",
+      "price": ".priceView-customer-price span",
+      "image": ".product-image img",
+      "link": ".sku-title h4 a",
+      "availability": ".fulfillment-fulfillment-summary"
+    },
+    "requires_js": true
+  },
+  "newegg": {
+    "version": "1.0.0",
+    "selectors": {
+      "search_url": "https://www.newegg.com/p/pl?d={query}",
+      "product_container": ".item-cell",
+      "title": ".item-title",
+      "price": ".price-current",
+      "image": ".item-img img",
+      "link": ".item-title",
+      "availability": ".item-promo"
+    },
+    "requires_js": false
+  }
+}
+

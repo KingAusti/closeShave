@@ -59,20 +59,3 @@ Thumbs.db
 # UV
 .uv/
 
-# Linting and Testing
-.mypy_cache/
-.ruff_cache/
-.pytest_cache/
-.coverage
-htmlcov/
-*.cover
-.hypothesis/
-.tox/
-
-# Linting
-.mypy_cache/
-.ruff_cache/
-.pytest_cache/
-.coverage
-htmlcov/
-
