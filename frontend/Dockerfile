@@ -1,21 +1,24 @@
 # Frontend Dockerfile - Multi-stage build
 FROM node:18-alpine as builder
 
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 # Set working directory
 WORKDIR /app
 
 # Copy package files
 COPY package.json ./
-COPY package-lock.json* ./
+COPY pnpm-lock.yaml* ./
 
 # Install dependencies
-RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
+RUN pnpm install --frozen-lockfile
 
 # Copy source code
 COPY . .
 
 # Build the application
-RUN npm run build
+RUN pnpm run build
 
 # Production stage with nginx
 FROM nginx:alpine

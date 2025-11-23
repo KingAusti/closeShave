@@ -79,11 +79,26 @@ fi
 
 echo -e "${GREEN}✓ Node.js $(node --version) found${NC}"
 
+# Check/Install pnpm
+echo ""
+echo "Checking pnpm installation..."
+if ! command -v pnpm &> /dev/null; then
+    echo "Installing pnpm..."
+    corepack enable
+    corepack prepare pnpm@latest --activate
+    if ! command -v pnpm &> /dev/null; then
+        echo -e "${RED}Error: Failed to install pnpm${NC}"
+        exit 1
+    fi
+fi
+
+echo -e "${GREEN}✓ pnpm found${NC}"
+
 # Install frontend dependencies
 echo ""
 echo "Installing frontend dependencies..."
 cd ../frontend
-npm install
+pnpm install
 
 echo -e "${GREEN}✓ Frontend dependencies installed${NC}"
 
@@ -112,7 +127,7 @@ sleep 3
 # Start frontend
 echo "Starting frontend server..."
 cd frontend
-npm run dev &
+pnpm run dev &
 FRONTEND_PID=$!
 cd ..
 
@@ -144,6 +159,6 @@ echo "  ./start.sh"
 echo ""
 echo "Or manually:"
 echo "  Backend:  cd backend && source .venv/bin/activate && uvicorn app.main:app --reload"
-echo "  Frontend: cd frontend && npm run dev"
+echo "  Frontend: cd frontend && pnpm run dev"
 echo ""
 

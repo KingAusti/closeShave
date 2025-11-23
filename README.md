@@ -97,7 +97,7 @@ uv run uvicorn app.main:app --reload
 
 # Terminal 2 - Frontend
 cd frontend
-npm run dev
+pnpm run dev
 ```
 
 Then open your browser to `http://localhost:5173`

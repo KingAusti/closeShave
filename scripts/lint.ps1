@@ -48,25 +48,25 @@ Write-Host "Frontend Linting (TypeScript/React)..." -ForegroundColor Yellow
 
 if (-not (Test-Path "node_modules")) {
     Write-Host "Installing dependencies..." -ForegroundColor Yellow
-    npm install
+    pnpm install
 }
 
 Write-Host "Running ESLint..." -ForegroundColor Yellow
-npm run lint
+pnpm run lint
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "❌ ESLint check failed. Run 'npm run lint:fix' to auto-fix issues." -ForegroundColor Red
+    Write-Host "❌ ESLint check failed. Run 'pnpm run lint:fix' to auto-fix issues." -ForegroundColor Red
     exit 1
 }
 
 Write-Host "Running Prettier format check..." -ForegroundColor Yellow
-npm run format:check
+pnpm run format:check
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "❌ Prettier format check failed. Run 'npm run format' to format code." -ForegroundColor Red
+    Write-Host "❌ Prettier format check failed. Run 'pnpm run format' to format code." -ForegroundColor Red
     exit 1
 }
 
 Write-Host "Running TypeScript type check..." -ForegroundColor Yellow
-npm run type-check
+pnpm run type-check
 if ($LASTEXITCODE -ne 0) {
     Write-Host "❌ TypeScript type check failed." -ForegroundColor Red
     exit 1
