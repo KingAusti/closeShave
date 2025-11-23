@@ -35,9 +35,18 @@ app = FastAPI(
 )
 
 # CORS middleware
+# Allow requests from localhost (dev) and from frontend container (Docker)
+cors_origins = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:5173",
+    "http://localhost",  # Docker frontend on port 80
+    "http://localhost:80",
+    "http://frontend",  # Docker service name
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5173"],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

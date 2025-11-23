@@ -52,6 +52,9 @@ RUN apt-get update && apt-get install -y \
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:${PATH}"
 
+# Copy Playwright browsers from builder
+COPY --from=builder /root/.cache/ms-playwright /root/.cache/ms-playwright
+
 # Set working directory
 WORKDIR /app
 

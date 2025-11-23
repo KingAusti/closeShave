@@ -2,7 +2,9 @@ import { useState } from 'react'
 import axios from 'axios'
 import type { SearchRequest, SearchResponse } from '../types'
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+// Use relative path when running in Docker (nginx proxies /api to backend)
+// Otherwise use explicit URL for local development
+const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:8000')
 
 export const useScraper = () => {
   const [loading, setLoading] = useState(false)
