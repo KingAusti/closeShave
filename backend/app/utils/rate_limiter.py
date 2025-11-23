@@ -32,13 +32,15 @@ class RateLimiter:
                         rp.set_url(robots_url)
                         rp.read()
                     else:
-                        # If robots.txt doesn't exist, assume allowed
-                        return True
+                        # If robots.txt doesn't exist, create empty parser
+                        # This allows all access but still caches the parser
+                        pass
             except Exception:
-                # If we can't fetch robots.txt, assume allowed
-                # but be respectful with delays
-                return True
+                # If we can't fetch robots.txt, create empty parser
+                # This allows all access but still caches the parser
+                pass
             
+            # Always cache the parser to avoid re-fetching
             self.robots_parsers[domain] = rp
         
         rp = self.robots_parsers[domain]
