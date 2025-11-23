@@ -68,7 +68,7 @@ class Database:
             
             await db.commit()
     
-    async def get_cached_search(self, cache_key: str) -> Optional[Dict[str, Any]]:
+    async def get_cached_search(self, cache_key: str) -> Optional[List[Dict[str, Any]]]:
         """Get cached search results"""
         async with aiosqlite.connect(self.db_path) as db:
             db.row_factory = aiosqlite.Row
@@ -83,7 +83,7 @@ class Database:
             return None
     
     async def cache_search(self, cache_key: str, query: str, merchant: str, 
-                          data: Dict[str, Any], ttl_hours: int = 1):
+                          data: List[Dict[str, Any]], ttl_hours: int = 1):
         """Cache search results"""
         expires_at = datetime.now() + timedelta(hours=ttl_hours)
         

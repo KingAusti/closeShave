@@ -3,7 +3,7 @@
 import time
 import hashlib
 import asyncio
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 import httpx
@@ -86,7 +86,7 @@ async def search_products(request: SearchRequest):
     location = None
     
     # Check cache first
-    cached_results = {}
+    cached_results: Dict[str, List[Dict[str, Any]]] = {}
     if config.is_cache_enabled():
         for merchant in merchants_to_search:
             if not config.get_merchant_enabled(merchant):
@@ -151,9 +151,9 @@ async def search_products(request: SearchRequest):
     enriched_products = []
     for product in all_products:
         # Apply filters
-        if request.min_price and product.base_price < request.min_price:
+        if request.min_price is not None and product.base_price < request.min_price:
             continue
-        if request.max_price and product.base_price > request.max_price:
+        if request.max_price is not None and product.base_price > request.max_price:
             continue
         if request.brand and request.brand.lower() not in product.title.lower():
             continue
