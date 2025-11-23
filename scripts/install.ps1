@@ -97,11 +97,35 @@ try {
     exit 1
 }
 
+# Check/Install pnpm
+Write-Host ""
+Write-Host "Checking pnpm installation..." -ForegroundColor Yellow
+try {
+    $pnpmVersion = pnpm --version 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        throw "pnpm not found"
+    }
+    Write-Host "✓ pnpm found" -ForegroundColor Green
+} catch {
+    Write-Host "Installing pnpm..." -ForegroundColor Yellow
+    corepack enable
+    corepack prepare pnpm@latest --activate
+    
+    try {
+        $pnpmVersion = pnpm --version 2>&1
+        Write-Host "✓ pnpm installed" -ForegroundColor Green
+    } catch {
+        Write-Host "Error: Failed to install pnpm. Please install manually." -ForegroundColor Red
+        Write-Host "Visit: https://pnpm.io/" -ForegroundColor Yellow
+        exit 1
+    }
+}
+
 # Install frontend dependencies
 Write-Host ""
 Write-Host "Installing frontend dependencies..." -ForegroundColor Yellow
 Set-Location ..\frontend
-npm install
+pnpm install
 
 Write-Host "✓ Frontend dependencies installed" -ForegroundColor Green
 
@@ -129,7 +153,7 @@ timeout /t 3 /nobreak >nul
 REM Start frontend
 echo Starting frontend server...
 cd frontend
-start "CloseShave Frontend" cmd /k "npm run dev"
+start "CloseShave Frontend" cmd /k "pnpm run dev"
 cd ..
 
 echo.
@@ -157,7 +181,7 @@ Write-Host "  .\start.bat" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Or manually:" -ForegroundColor Yellow
 Write-Host "  Backend:  cd backend && .venv\Scripts\activate && uvicorn app.main:app --reload" -ForegroundColor Cyan
-Write-Host "  Frontend: cd frontend && npm run dev" -ForegroundColor Cyan
+Write-Host "  Frontend: cd frontend && pnpm run dev" -ForegroundColor Cyan
 Write-Host ""
 
 Set-Location ..

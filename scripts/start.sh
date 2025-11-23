@@ -18,7 +18,7 @@ sleep 3
 # Start frontend
 echo "Starting frontend server..."
 cd frontend
-npm run dev &
+pnpm run dev &
 FRONTEND_PID=$!
 cd ..
 

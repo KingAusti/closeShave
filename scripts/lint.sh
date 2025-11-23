@@ -46,23 +46,23 @@ echo "Frontend Linting (TypeScript/React)..."
 
 if [ ! -d "node_modules" ]; then
     echo "Installing dependencies..."
-    npm install
+    pnpm install
 fi
 
 echo "Running ESLint..."
-npm run lint || {
-    echo "❌ ESLint check failed. Run 'npm run lint:fix' to auto-fix issues."
+pnpm run lint || {
+    echo "❌ ESLint check failed. Run 'pnpm run lint:fix' to auto-fix issues."
     exit 1
 }
 
 echo "Running Prettier format check..."
-npm run format:check || {
-    echo "❌ Prettier format check failed. Run 'npm run format' to format code."
+pnpm run format:check || {
+    echo "❌ Prettier format check failed. Run 'pnpm run format' to format code."
     exit 1
 }
 
 echo "Running TypeScript type check..."
-npm run type-check || {
+pnpm run type-check || {
     echo "❌ TypeScript type check failed."
     exit 1
 }
