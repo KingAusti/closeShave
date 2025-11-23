@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react'
-import './MatrixText.css'
 
 export default function MatrixText() {
   const canvasRef = useRef<HTMLCanvasElement>(null)

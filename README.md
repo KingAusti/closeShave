@@ -13,94 +13,56 @@ A comprehensive web scraper Progressive Web Application that searches across maj
 - 🖼️ Image proxying with direct links
 - 📊 Out of stock indicators
 
-## Installation
+## Quick Start
 
 ### Docker (Recommended)
 
-The easiest way to run CloseShave is using Docker Compose:
-
-**Quick Start:**
 ```bash
-# Mac/Linux
-./scripts/docker-start.sh
-
-# Windows
-.\scripts\docker-start.ps1
+docker-compose up
 ```
 
-**Manual Docker Commands:**
+That's it! The app will be available at:
+- Frontend: `http://localhost`
+- Backend API: `http://localhost:8000`
+
+**Other useful commands:**
 ```bash
-# Build and start all services
-docker-compose up -d
+# Stop services
+docker-compose down
 
 # View logs
 docker-compose logs -f
 
-# Stop services
-docker-compose down
-```
-
-The application will be available at:
-- Frontend: `http://localhost`
-- Backend API: `http://localhost:8000`
-
-For detailed Docker documentation, see [DOCKER.md](DOCKER.md).
-
-### Local Development
-
-#### Mac/Linux
-
-```bash
-chmod +x scripts/install.sh
-./scripts/install.sh
-```
-
-#### Windows
-
-```powershell
-.\scripts\install.ps1
-```
-
-## Usage
-
-### Docker
-
-```bash
-# Start services
-docker-compose up -d
-
-# Stop services
-docker-compose down
-
-# Rebuild after code changes
-docker-compose up -d --build
-
-# View logs
-docker-compose logs -f backend
-docker-compose logs -f frontend
+# Rebuild after changes
+docker-compose up --build
 ```
 
 ### Local Development
 
-After installation, start the application:
+If you prefer running locally:
 
 ```bash
-./scripts/start.sh
+# Install dependencies
+./scripts/install.sh    # Mac/Linux
+.\scripts\install.ps1   # Windows
+
+# Start the app
+./scripts/start.sh      # Mac/Linux
+.\start.bat              # Windows
 ```
 
-Or manually:
+## Configuration
 
+Edit `backend/config/settings.json` to customize:
+- Enabled merchants
+- Request delays
+- Cache TTL
+- IP geolocation API key
+
+When using Docker, edit the file and restart:
 ```bash
-# Terminal 1 - Backend
-cd backend
-uv run uvicorn app.main:app --reload
-
-# Terminal 2 - Frontend
-cd frontend
-pnpm run dev
+docker-compose restart backend
 ```
-
-Then open your browser to `http://localhost:5173`
 
 ## Project Structure
 
@@ -111,32 +73,9 @@ Then open your browser to `http://localhost:5173`
 - `backend/Dockerfile` - Backend container definition
 - `frontend/Dockerfile` - Frontend container definition
 
-## Configuration
-
-Edit `backend/config/settings.json` to customize:
-- Enabled merchants
-- Request delays
-- Cache TTL
-- IP geolocation API key
-
-### Docker Configuration
-
-When using Docker, configuration files are mounted as volumes. Edit `backend/config/settings.json` on the host machine and restart the container:
-
-```bash
-docker-compose restart backend
-```
-
 ## Deployment
 
-### Docker Deployment
-
-See [DOCKER.md](DOCKER.md) for comprehensive Docker deployment instructions including:
-- Production configuration
-- Kubernetes deployment
-- Docker Swarm setup
-- Security best practices
-- Monitoring and troubleshooting
+For production deployment, see [DOCKER.md](DOCKER.md).
 
 ## License
 

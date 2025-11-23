@@ -7,9 +7,18 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-ENV PATH="/root/.cargo/bin:${PATH}"
+# Install uv - download and install to a known location
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    mkdir -p /usr/local/bin && \
+    if [ -f /root/.cargo/bin/uv ]; then \
+        cp /root/.cargo/bin/uv /usr/local/bin/uv; \
+    else \
+        find /root -name uv -type f -executable 2>/dev/null | head -1 | xargs -I {} cp {} /usr/local/bin/uv; \
+    fi && \
+    chmod +x /usr/local/bin/uv
+ENV PATH="/usr/local/bin:/root/.cargo/bin:${PATH}"
+# Verify uv is installed
+RUN uv --version
 
 # Set working directory
 WORKDIR /app
