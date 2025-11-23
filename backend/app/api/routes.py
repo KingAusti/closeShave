@@ -60,13 +60,13 @@ async def enrich_product_with_tax_shipping(product: Product, location: Optional[
     # Calculate total
     total_price = PriceParser.calculate_total(product.base_price, shipping_cost, tax)
     
-    # Update product
-    product.shipping_cost = shipping_cost
-    product.tax = tax
-    product.total_price = total_price
-    product.price = total_price  # Use total price as main price
-    
-    return product
+    # Create new product instance (Pydantic v2 models are immutable)
+    return product.model_copy(update={
+        "shipping_cost": shipping_cost,
+        "tax": tax,
+        "total_price": total_price,
+        "price": total_price  # Use total price as main price
+    })
 
 
 @router.post("/api/search", response_model=SearchResponse)
@@ -124,6 +124,8 @@ async def search_products(request: SearchRequest):
                     if config.is_cache_enabled():
                         cache_key = get_cache_key(request.query, m, {
                             "max_results": request.max_results,
+                            "min_price": request.min_price,
+                            "max_price": request.max_price,
                         })
                         await db.cache_search(
                             cache_key, request.query, m,
@@ -224,14 +226,85 @@ async def get_merchants():
 @router.get("/api/image-proxy")
 async def proxy_image(url: str):
     """Proxy images to avoid CORS issues"""
+    from urllib.parse import urlparse
+    
+    # Validate URL to prevent SSRF attacks
     try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
+        parsed = urlparse(url)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid URL")
+    
+    # Only allow HTTP and HTTPS protocols
+    if parsed.scheme not in ('http', 'https'):
+        raise HTTPException(status_code=400, detail="Only HTTP and HTTPS URLs are allowed")
+    
+    # Block private/internal IP addresses and localhost
+    hostname = parsed.hostname
+    if not hostname:
+        raise HTTPException(status_code=400, detail="Invalid hostname")
+    
+    # Block localhost and private IP ranges
+    blocked_hosts = {
+        'localhost', '127.0.0.1', '0.0.0.0', '::1',
+        '169.254.169.254',  # AWS metadata
+        'metadata.google.internal',  # GCP metadata
+    }
+    
+    if hostname.lower() in blocked_hosts:
+        raise HTTPException(status_code=403, detail="Access to this host is not allowed")
+    
+    # Block private IP ranges (10.x.x.x, 172.16-31.x.x, 192.168.x.x)
+    if hostname.startswith('10.') or hostname.startswith('192.168.'):
+        raise HTTPException(status_code=403, detail="Access to private IP ranges is not allowed")
+    
+    if hostname.startswith('172.'):
+        parts = hostname.split('.')
+        if len(parts) >= 2:
+            try:
+                second_octet = int(parts[1])
+                if 16 <= second_octet <= 31:
+                    raise HTTPException(status_code=403, detail="Access to private IP ranges is not allowed")
+            except ValueError:
+                pass
+    
+    # Only allow known merchant image domains
+    allowed_domains = {
+        'amazon.com', 'amazonaws.com',  # Amazon
+        'ebay.com', 'ebayimg.com',  # eBay
+        'walmart.com', 'walmartimages.com',  # Walmart
+        'target.com', 'targetimg1.com',  # Target
+        'bestbuy.com', 'bbystatic.com',  # Best Buy
+        'newegg.com', 'neweggimages.com',  # Newegg
+    }
+    
+    # Check if hostname or any parent domain is allowed
+    hostname_parts = hostname.lower().split('.')
+    is_allowed = False
+    for i in range(len(hostname_parts)):
+        domain = '.'.join(hostname_parts[i:])
+        if domain in allowed_domains:
+            is_allowed = True
+            break
+    
+    if not is_allowed:
+        raise HTTPException(status_code=403, detail="Image host not in allowed list")
+    
+    try:
+        async with httpx.AsyncClient(timeout=10.0, follow_redirects=True) as client:
             response = await client.get(url)
             response.raise_for_status()
+            
+            # Validate content type is an image
+            content_type = response.headers.get("content-type", "").lower()
+            if not content_type.startswith("image/"):
+                raise HTTPException(status_code=400, detail="URL does not point to an image")
+            
             return StreamingResponse(
                 iter([response.content]),
-                media_type=response.headers.get("content-type", "image/jpeg")
+                media_type=content_type
             )
-    except Exception as e:
+    except httpx.HTTPError as e:
         raise HTTPException(status_code=404, detail="Image not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Failed to fetch image")
 
