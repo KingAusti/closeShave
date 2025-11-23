@@ -277,21 +277,98 @@ async def proxy_image(url: str):
         'newegg.com', 'neweggimages.com',  # Newegg
     }
     
-    # Check if hostname or any parent domain is allowed
-    hostname_parts = hostname.lower().split('.')
+    # Validate hostname matches allowed domain exactly or is a proper subdomain
+    hostname_lower = hostname.lower()
     is_allowed = False
-    for i in range(len(hostname_parts)):
-        domain = '.'.join(hostname_parts[i:])
-        if domain in allowed_domains:
-            is_allowed = True
-            break
+    
+    # Check exact match first
+    if hostname_lower in allowed_domains:
+        is_allowed = True
+    else:
+        # Check if it's a proper subdomain (e.g., images.amazon.com for amazon.com)
+        # Must end with '.' + domain to prevent suffix matching attacks
+        for domain in allowed_domains:
+            if hostname_lower == domain or hostname_lower.endswith('.' + domain):
+                is_allowed = True
+                break
     
     if not is_allowed:
         raise HTTPException(status_code=403, detail="Image host not in allowed list")
     
+    # Helper function to validate redirect URLs
+    def validate_redirect_url(redirect_url: str) -> bool:
+        """Validate that redirect URL is also safe"""
+        try:
+            redirect_parsed = urlparse(redirect_url)
+            redirect_hostname = redirect_parsed.hostname
+            
+            if not redirect_hostname:
+                return False
+            
+            # Block localhost and private IP ranges
+            if redirect_hostname.lower() in blocked_hosts:
+                return False
+            
+            # Block private IP ranges
+            if redirect_hostname.startswith('10.') or redirect_hostname.startswith('192.168.'):
+                return False
+            
+            if redirect_hostname.startswith('172.'):
+                parts = redirect_hostname.split('.')
+                if len(parts) >= 2:
+                    try:
+                        second_octet = int(parts[1])
+                        if 16 <= second_octet <= 31:
+                            return False
+                    except ValueError:
+                        pass
+            
+            # Validate redirect hostname matches allowed domain
+            redirect_hostname_lower = redirect_hostname.lower()
+            if redirect_hostname_lower in allowed_domains:
+                return True
+            
+            for domain in allowed_domains:
+                if redirect_hostname_lower == domain or redirect_hostname_lower.endswith('.' + domain):
+                    return True
+            
+            return False
+        except Exception:
+            return False
+    
     try:
-        async with httpx.AsyncClient(timeout=10.0, follow_redirects=True) as client:
-            response = await client.get(url)
+        # Disable automatic redirects and handle them manually to validate each redirect
+        async with httpx.AsyncClient(timeout=10.0, follow_redirects=False) as client:
+            max_redirects = 5
+            current_url = url
+            response = None
+            
+            for _ in range(max_redirects):
+                response = await client.get(current_url)
+                
+                # If not a redirect, we're done
+                if response.status_code not in (301, 302, 303, 307, 308):
+                    break
+                
+                # Get redirect location
+                redirect_url = response.headers.get('location')
+                if not redirect_url:
+                    raise HTTPException(status_code=400, detail="Invalid redirect")
+                
+                # Make redirect URL absolute if relative
+                if not redirect_url.startswith(('http://', 'https://')):
+                    redirect_parsed = urlparse(current_url)
+                    redirect_url = f"{redirect_parsed.scheme}://{redirect_parsed.netloc}{redirect_url}"
+                
+                # Validate redirect URL
+                if not validate_redirect_url(redirect_url):
+                    raise HTTPException(status_code=403, detail="Redirect to unauthorized host")
+                
+                current_url = redirect_url
+            
+            if response is None:
+                raise HTTPException(status_code=500, detail="Failed to fetch image")
+            
             response.raise_for_status()
             
             # Validate content type is an image
@@ -303,8 +380,12 @@ async def proxy_image(url: str):
                 iter([response.content]),
                 media_type=content_type
             )
-    except httpx.HTTPError as e:
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(status_code=e.response.status_code, detail="Image not found")
+    except httpx.HTTPError:
         raise HTTPException(status_code=404, detail="Image not found")
-    except Exception as e:
+    except HTTPException:
+        raise
+    except Exception:
         raise HTTPException(status_code=500, detail="Failed to fetch image")
 
