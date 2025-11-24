@@ -2,7 +2,8 @@
 
 import httpx
 import asyncio
-from typing import Dict, List, Optional, Any
+import time
+from typing import Dict, List, Optional, Any, Tuple
 from app.config import config
 
 
@@ -15,6 +16,8 @@ class SearchValidator:
         self.base_url = "https://api.duckduckgo.com"
         self.autocomplete_url = "https://duckduckgo.com/ac"
         self.rate_limiter_delay = 0.5  # Be respectful to DuckDuckGo
+        # In-memory cache: {cache_key: (result_dict, timestamp)}
+        self._cache: Dict[str, Tuple[Dict[str, Any], float]] = {}
     
     async def validate_query(self, query: str) -> Dict[str, Any]:
         """
@@ -148,16 +151,41 @@ class SearchValidator:
             return False
     
     async def _get_cached_validation(self, cache_key: str) -> Optional[Dict[str, Any]]:
-        """Get cached validation result"""
-        # Simple in-memory cache (can be enhanced with database caching later)
-        # For now, rely on API rate limiting and natural caching
+        """Get cached validation result if it exists and is still valid"""
+        if cache_key not in self._cache:
+            return None
+        
+        result, timestamp = self._cache[cache_key]
+        current_time = time.time()
+        age_minutes = (current_time - timestamp) / 60.0
+        
+        # Check if cache entry is still valid (within TTL)
+        if age_minutes < self.cache_ttl_minutes:
+            return result
+        
+        # Cache entry expired, remove it
+        del self._cache[cache_key]
         return None
     
     async def _cache_validation(self, cache_key: str, result: Dict[str, Any]):
-        """Cache validation result"""
-        # Simple implementation - could be enhanced with database caching
-        # For now, we rely on the API's natural caching and rate limiting
-        pass
+        """Cache validation result with current timestamp"""
+        current_time = time.time()
+        self._cache[cache_key] = (result, current_time)
+        
+        # Optional: Clean up expired entries periodically to prevent memory bloat
+        # This is a simple cleanup that runs occasionally
+        if len(self._cache) > 1000:  # Only clean when cache gets large
+            await self._cleanup_expired_cache()
+    
+    async def _cleanup_expired_cache(self):
+        """Remove expired cache entries to free memory"""
+        current_time = time.time()
+        expired_keys = [
+            key for key, (_, timestamp) in self._cache.items()
+            if (current_time - timestamp) / 60.0 >= self.cache_ttl_minutes
+        ]
+        for key in expired_keys:
+            del self._cache[key]
 
 
 # Global validator instance
