@@ -1,8 +1,11 @@
 """Geolocation and tax calculation utilities"""
 
+import logging
 import httpx
 from typing import Dict, Optional
 from app.config import config
+
+logger = logging.getLogger(__name__)
 
 
 class GeolocationService:
@@ -55,8 +58,8 @@ class GeolocationService:
                             "city": data.get("city", ""),
                             "zip": data.get("zip", ""),
                         }
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Error getting location from IP {ip}: {e}")
         
         return None
     

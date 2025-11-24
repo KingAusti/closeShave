@@ -2,8 +2,10 @@ import { useState, useEffect, useRef } from 'react'
 import { useValidation } from '../hooks/useValidation'
 import './SearchBar.css'
 
+import type { SearchRequest } from '../types'
+
 interface SearchBarProps {
-  onSearch: (query: string, filters: any) => void
+  onSearch: (query: string, filters: Partial<SearchRequest>) => void
   loading: boolean
 }
 

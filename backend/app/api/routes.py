@@ -5,7 +5,7 @@ import hashlib
 import asyncio
 import logging
 from typing import List, Optional, Dict, Any
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 import httpx
 
@@ -25,6 +25,9 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
+# Available merchants
+AVAILABLE_MERCHANTS = ["amazon", "ebay", "walmart", "target", "bestbuy", "newegg"]
+
 # Scraper mapping
 SCRAPERS = {
     "amazon": AmazonScraper,
@@ -36,7 +39,7 @@ SCRAPERS = {
 }
 
 
-def get_cache_key(query: str, merchant: str, filters: dict) -> str:
+def get_cache_key(query: str, merchant: str, filters: Dict[str, Any]) -> str:
     """Generate cache key for search"""
     key_data = f"{query}:{merchant}:{str(filters)}"
     return hashlib.md5(key_data.encode()).hexdigest()
@@ -106,15 +109,14 @@ async def search_products(request: SearchRequest):
     start_time = time.time()
     
     # Optional pre-validation (non-blocking)
-    validation_result = None
     if config.is_validation_enabled():
         try:
             validation_result = await search_validator.validate_query(request.query)
             # Log validation result but don't block search
             if not validation_result.get("is_valid", True):
-                print(f"Warning: Query '{request.query}' may not return good results")
+                logger.warning(f"Query '{request.query}' may not return good results")
         except Exception as e:
-            print(f"Validation error (non-blocking): {e}")
+            logger.warning(f"Validation error (non-blocking): {e}")
     
     # Determine which merchants to search
     merchants_to_search = request.merchants or []
@@ -240,7 +242,7 @@ async def search_products(request: SearchRequest):
 async def health_check():
     """Health check endpoint"""
     merchants = []
-    for merchant in ["amazon", "ebay", "walmart", "target", "bestbuy", "newegg"]:
+    for merchant in AVAILABLE_MERCHANTS:
         enabled = config.get_merchant_enabled(merchant)
         version = config.version.get("scrapers", {}).get(merchant, "1.0.0")
         merchants.append(MerchantInfo(
@@ -260,7 +262,7 @@ async def health_check():
 async def get_merchants():
     """Get list of available merchants"""
     merchants = []
-    for merchant in ["amazon", "ebay", "walmart", "target", "bestbuy", "newegg"]:
+    for merchant in AVAILABLE_MERCHANTS:
         merchants.append({
             "name": merchant,
             "enabled": config.get_merchant_enabled(merchant),
