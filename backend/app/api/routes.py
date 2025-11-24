@@ -75,9 +75,10 @@ async def validate_search(request: ValidationRequest):
     """Validate a search query and get suggestions"""
     if not config.is_validation_enabled():
         # Return permissive result if validation is disabled
+        # has_results=False since no actual validation was performed
         return ValidationResponse(
             is_valid=True,
-            has_results=True,
+            has_results=False,
             suggestions=[],
             confidence=0.5
         )

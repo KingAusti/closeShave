@@ -34,6 +34,11 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
       setShowSuggestions(false)
       suppressAutoShowRef.current = false
     }
+    
+    // Cleanup function to abort pending requests on unmount
+    return () => {
+      clearValidation()
+    }
   }, [query, barcode, validateQueryDebounced, clearValidation])
 
   const handleSubmit = (e: React.FormEvent) => {
