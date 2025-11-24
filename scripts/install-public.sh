@@ -66,10 +66,11 @@ curl -fsSL "https://raw.githubusercontent.com/${GITHUB_USERNAME}/closeshave/main
 # Substitute Docker Hub username placeholder in the compose file
 echo "🔧 Configuring Docker Hub username..."
 # Escape special characters in DOCKERHUB_USERNAME for safe substitution
-# For sed replacement string, we need to escape: \ (backslash) and & (ampersand)
-# For bash double quotes, we need to escape: $ (dollar) to prevent variable expansion
+# Since we use double quotes in the sed command, bash consumes backslashes before sed sees them
+# So we need to double-escape: \ -> \\\\ (bash consumes \\, sed receives \\), & -> \\& (bash consumes \, sed receives \&)
+# For $, we only escape for bash (to prevent variable expansion): $ -> \$ (bash consumes \, sed receives $ which is literal)
 # Also use | as delimiter to avoid issues with / in usernames
-ESCAPED_USERNAME=$(printf '%s\n' "$DOCKERHUB_USERNAME" | sed 's/\\/\\\\/g; s/&/\\&/g; s/\$/\\$/g')
+ESCAPED_USERNAME=$(printf '%s\n' "$DOCKERHUB_USERNAME" | sed 's/\\/\\\\\\\\/g; s/&/\\\\&/g; s/\$/\\$/g')
 # Use a temporary file for cross-platform compatibility
 TEMP_FILE=$(mktemp)
 # Use | as delimiter to avoid issues with / in usernames
