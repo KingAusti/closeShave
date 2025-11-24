@@ -41,6 +41,20 @@ if [ -z "$GITHUB_USERNAME" ]; then
     exit 1
 fi
 
+# Check for required Docker Hub username
+if [ -z "$DOCKERHUB_USERNAME" ]; then
+    echo "❌ Error: DOCKERHUB_USERNAME environment variable is not set."
+    echo ""
+    echo "Please set your Docker Hub username before running this script:"
+    echo "   export DOCKERHUB_USERNAME=your-dockerhub-username"
+    echo "   export GITHUB_USERNAME=your-github-username"
+    echo "   curl -fsSL https://raw.githubusercontent.com/\$GITHUB_USERNAME/closeshave/main/scripts/install-public.sh | bash"
+    echo ""
+    echo "Or run it directly:"
+    echo "   DOCKERHUB_USERNAME=your-dockerhub-username GITHUB_USERNAME=your-github-username bash <(curl -fsSL https://raw.githubusercontent.com/your-github-username/closeshave/main/scripts/install-public.sh)"
+    exit 1
+fi
+
 # Determine where to save the compose file
 COMPOSE_FILE="${HOME}/.closeshave/docker-compose.yml"
 mkdir -p "$(dirname "$COMPOSE_FILE")"
@@ -48,6 +62,13 @@ mkdir -p "$(dirname "$COMPOSE_FILE")"
 # Download the public compose file
 echo "📥 Downloading configuration..."
 curl -fsSL "https://raw.githubusercontent.com/${GITHUB_USERNAME}/closeshave/main/docker-compose.public.yml" -o "$COMPOSE_FILE"
+
+# Substitute Docker Hub username placeholder in the compose file
+echo "🔧 Configuring Docker Hub username..."
+# Use a temporary file for cross-platform compatibility
+TEMP_FILE=$(mktemp)
+sed "s/YOUR_DOCKERHUB_USERNAME/${DOCKERHUB_USERNAME}/g" "$COMPOSE_FILE" > "$TEMP_FILE"
+mv "$TEMP_FILE" "$COMPOSE_FILE"
 
 # Pull and start the containers
 echo "🐳 Pulling Docker images..."
