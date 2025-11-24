@@ -109,10 +109,15 @@ class ConfigurationError(CloseShaveException):
 class ImageProxyError(CloseShaveException):
     """Raised when image proxy operations fail"""
     
-    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
+    def __init__(
+        self,
+        message: str,
+        status_code: int = 502,
+        details: Optional[Dict[str, Any]] = None
+    ):
         super().__init__(
             message=message,
-            status_code=502,
+            status_code=status_code,
             error_code="IMAGE_PROXY_ERROR",
             details=details
         )
