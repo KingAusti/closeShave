@@ -248,15 +248,15 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
           />
         </div>
         <div className="filter-group checkbox-group">
-          <label className="field-label">
+          <label>
             <input
               type="checkbox"
               checked={includeOutOfStock}
               onChange={(e) => setIncludeOutOfStock(e.target.checked)}
             />
-            Include Out of Stock
-            <span className="help-text">Show products that are currently out of stock</span>
+            <span>Include Out of Stock</span>
           </label>
+          <span className="help-text">Show products that are currently out of stock</span>
         </div>
       </div>
     </form>

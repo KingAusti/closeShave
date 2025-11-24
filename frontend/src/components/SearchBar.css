@@ -146,8 +146,8 @@
 }
 
 .checkbox-group {
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 0.5rem;
 }
 
@@ -156,6 +156,14 @@
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.checkbox-group .help-text {
+  margin-top: 0;
 }
 
 .checkbox-group input[type="checkbox"] {
