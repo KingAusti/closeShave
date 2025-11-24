@@ -64,7 +64,7 @@ function App() {
             </div>
           )}
           
-          {!loading && (
+          {!loading && !error && (
             <ResultsGrid products={products} onNewSearch={handleNewSearch} />
           )}
         </div>
