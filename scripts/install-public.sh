@@ -28,13 +28,26 @@ else
     COMPOSE_CMD="docker-compose"
 fi
 
+# Check for required GitHub username
+if [ -z "$GITHUB_USERNAME" ]; then
+    echo "❌ Error: GITHUB_USERNAME environment variable is not set."
+    echo ""
+    echo "Please set your GitHub username before running this script:"
+    echo "   export GITHUB_USERNAME=your-github-username"
+    echo "   curl -fsSL https://raw.githubusercontent.com/\$GITHUB_USERNAME/closeshave/main/scripts/install-public.sh | bash"
+    echo ""
+    echo "Or run it directly:"
+    echo "   GITHUB_USERNAME=your-github-username bash <(curl -fsSL https://raw.githubusercontent.com/your-github-username/closeshave/main/scripts/install-public.sh)"
+    exit 1
+fi
+
 # Determine where to save the compose file
 COMPOSE_FILE="${HOME}/.closeshave/docker-compose.yml"
 mkdir -p "$(dirname "$COMPOSE_FILE")"
 
 # Download the public compose file
 echo "📥 Downloading configuration..."
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/closeshave/main/docker-compose.public.yml -o "$COMPOSE_FILE"
+curl -fsSL "https://raw.githubusercontent.com/${GITHUB_USERNAME}/closeshave/main/docker-compose.public.yml" -o "$COMPOSE_FILE"
 
 # Pull and start the containers
 echo "🐳 Pulling Docker images..."
