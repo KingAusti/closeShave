@@ -4,7 +4,10 @@ import type { ValidationRequest, ValidationResponse } from '../types'
 
 // Use relative path when running in Docker (nginx proxies /api to backend)
 // Otherwise use explicit URL for local development
-const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:8000')
+// In dev mode, Vite proxy handles /api requests, so use empty string
+// In prod mode, nginx proxy handles /api requests, so use empty string
+// Only use explicit URL if VITE_API_URL is explicitly set
+const API_BASE = import.meta.env.VITE_API_URL || ''
 
 export const useValidation = () => {
   const [loading, setLoading] = useState(false)
