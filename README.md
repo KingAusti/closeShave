@@ -57,7 +57,7 @@ If you want to build from source or contribute:
 
 ```bash
 # Clone the repository
-git clone https://github.com/kingausti/closeshave.git
+git clone https://github.com/YOUR_USERNAME/closeshave.git
 cd closeshave
 
 # Start with Docker Compose (builds images locally)
