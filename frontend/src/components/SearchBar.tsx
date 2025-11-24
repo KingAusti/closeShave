@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useValidation } from '../hooks/useValidation'
 import './SearchBar.css'
 
@@ -15,6 +15,7 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
   const [brand, setBrand] = useState('')
   const [includeOutOfStock, setIncludeOutOfStock] = useState(true)
   const [showSuggestions, setShowSuggestions] = useState(false)
+  const suppressAutoShowRef = useRef(false)
   
   const { validateQueryDebounced, validationResult, loading: validating, clearValidation } = useValidation()
 
@@ -22,10 +23,16 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
   useEffect(() => {
     if (query && !barcode) {
       validateQueryDebounced(query, 500)
-      setShowSuggestions(true)
+      // Only auto-show suggestions if not suppressed (e.g., by clicking a suggestion)
+      if (!suppressAutoShowRef.current) {
+        setShowSuggestions(true)
+      }
+      // Reset suppression flag after handling the query change
+      suppressAutoShowRef.current = false
     } else {
       clearValidation()
       setShowSuggestions(false)
+      suppressAutoShowRef.current = false
     }
   }, [query, barcode, validateQueryDebounced, clearValidation])
 
@@ -45,6 +52,8 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
   }
 
   const handleSuggestionClick = (suggestion: string) => {
+    // Suppress auto-showing suggestions when query is updated programmatically
+    suppressAutoShowRef.current = true
     setQuery(suggestion)
     setShowSuggestions(false)
     // Trigger search with suggestion
