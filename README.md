@@ -15,29 +15,56 @@ A comprehensive web scraper Progressive Web Application that searches across maj
 
 ## Quick Start
 
-### Docker (Recommended)
+### 🚀 Easy Installation (Docker Hub - Recommended)
 
+The easiest way to get started is using pre-built Docker images:
+
+> **Note for maintainers:** Before sharing, replace `YOUR_USERNAME` with your actual GitHub username in the URLs below.
+
+**Option 1: One-line install script**
 ```bash
-docker-compose up
+curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/closeshave/main/scripts/install-public.sh | bash
+```
+
+**Option 2: Manual Docker Compose**
+```bash
+# Download the public compose file
+curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/closeshave/main/docker-compose.public.yml -o docker-compose.yml
+
+# Start the application
+docker-compose up -d
 ```
 
 That's it! The app will be available at:
 - Frontend: `http://localhost`
 - Backend API: `http://localhost:8000`
 
-**Other useful commands:**
+**Useful commands:**
 ```bash
-# Stop services
-docker-compose down
-
 # View logs
 docker-compose logs -f
 
-# Rebuild after changes
-docker-compose up --build
+# Stop services
+docker-compose down
+
+# Update to latest version
+docker-compose pull && docker-compose up -d
 ```
 
-### Local Development
+### 🛠️ Development Setup (Build from Source)
+
+If you want to build from source or contribute:
+
+```bash
+# Clone the repository
+git clone https://github.com/YOUR_USERNAME/closeshave.git
+cd closeshave
+
+# Start with Docker Compose (builds images locally)
+docker-compose up
+```
+
+### 💻 Local Development
 
 If you prefer running locally:
 
@@ -75,7 +102,13 @@ docker-compose restart backend
 
 ## Deployment
 
-For production deployment, see [DOCKER.md](DOCKER.md).
+### Publishing to Docker Hub
+
+To publish your own images to Docker Hub for easy distribution, see [DEPLOY.md](DEPLOY.md).
+
+### Production Deployment
+
+For production deployment options, see [DOCKER.md](DOCKER.md).
 
 ## License
 
