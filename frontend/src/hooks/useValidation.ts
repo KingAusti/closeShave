@@ -11,6 +11,8 @@ export const useValidation = () => {
   const [validationResult, setValidationResult] = useState<ValidationResponse | null>(null)
   const debounceTimer = useRef<NodeJS.Timeout | null>(null)
   const cache = useRef<Map<string, ValidationResponse>>(new Map())
+  const abortControllerRef = useRef<AbortController | null>(null)
+  const currentQueryRef = useRef<string | null>(null)
 
   const validateQuery = useCallback(
     async (query: string): Promise<ValidationResponse> => {
@@ -22,17 +24,33 @@ export const useValidation = () => {
           confidence: 0.0
         }
         setValidationResult(emptyResult)
+        currentQueryRef.current = null
         return emptyResult
       }
 
       const trimmedQuery = query.trim()
+      
+      // Cancel any in-flight request
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+      
+      // Track the current query being validated
+      currentQueryRef.current = trimmedQuery
 
       // Check cache first
       if (cache.current.has(trimmedQuery)) {
         const cached = cache.current.get(trimmedQuery)!
-        setValidationResult(cached)
+        // Only update state if this is still the current query
+        if (currentQueryRef.current === trimmedQuery) {
+          setValidationResult(cached)
+        }
         return cached
       }
+
+      // Create new AbortController for this request
+      const abortController = new AbortController()
+      abortControllerRef.current = abortController
 
       setLoading(true)
       try {
@@ -42,25 +60,66 @@ export const useValidation = () => {
 
         const response = await axios.post<ValidationResponse>(
           `${API_BASE}/api/validate`,
-          request
+          request,
+          {
+            signal: abortController.signal
+          }
         )
 
-        // Cache the result
-        cache.current.set(trimmedQuery, response.data)
-        setValidationResult(response.data)
+        // Only update state if this is still the current query
+        if (currentQueryRef.current === trimmedQuery) {
+          // Cache the result
+          cache.current.set(trimmedQuery, response.data)
+          setValidationResult(response.data)
+        }
         return response.data
       } catch (error: any) {
-        // Return permissive result on error (don't block searches)
-        const errorResult: ValidationResponse = {
+        // Ignore abort/cancellation errors
+        const isCancelled = 
+          axios.isCancel(error) || 
+          error.name === 'AbortError' || 
+          error.name === 'CanceledError' ||
+          error.code === 'ERR_CANCELED'
+        
+        if (isCancelled) {
+          // Request was cancelled, return a neutral result
+          return {
+            is_valid: true,
+            has_results: false,
+            suggestions: [],
+            confidence: 0.5
+          }
+        }
+        
+        // Only update state on real errors if this is still the current query
+        if (currentQueryRef.current === trimmedQuery) {
+          // Return permissive result on error (don't block searches)
+          const errorResult: ValidationResponse = {
+            is_valid: true,
+            has_results: false,
+            suggestions: [],
+            confidence: 0.5
+          }
+          setValidationResult(errorResult)
+          return errorResult
+        }
+        
+        // Return default result for cancelled/stale requests
+        return {
           is_valid: true,
           has_results: false,
           suggestions: [],
           confidence: 0.5
         }
-        setValidationResult(errorResult)
-        return errorResult
       } finally {
-        setLoading(false)
+        // Only update loading state if this is still the current query
+        if (currentQueryRef.current === trimmedQuery) {
+          setLoading(false)
+        }
+        // Clear abort controller if this was the current request
+        if (abortControllerRef.current === abortController) {
+          abortControllerRef.current = null
+        }
       }
     },
     []
@@ -80,7 +139,18 @@ export const useValidation = () => {
   )
 
   const clearValidation = useCallback(() => {
+    // Cancel any in-flight request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+      abortControllerRef.current = null
+    }
+    
+    // Clear current query tracking
+    currentQueryRef.current = null
+    
     setValidationResult(null)
+    setLoading(false)
+    
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current)
       debounceTimer.current = null
