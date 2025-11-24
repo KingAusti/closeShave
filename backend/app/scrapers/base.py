@@ -1,5 +1,6 @@
 """Base scraper class"""
 
+import logging
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any, Optional
 import httpx
@@ -9,6 +10,8 @@ from app.config import config
 from app.utils.rate_limiter import RateLimiter
 from app.utils.price_parser import PriceParser
 from app.models import Product
+
+logger = logging.getLogger(__name__)
 
 
 class BaseScraper(ABC):
@@ -60,7 +63,7 @@ class BaseScraper(ABC):
             else:
                 return await self._search_with_requests(search_url, max_results)
         except Exception as e:
-            print(f"Error searching {self.merchant_name}: {e}")
+            logger.error(f"Error searching {self.merchant_name}: {e}", exc_info=True)
             return []
     
     async def _search_with_requests(self, url: str, max_results: int) -> List[Product]:

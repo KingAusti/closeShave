@@ -4,7 +4,7 @@ import ResultsGrid from './components/ResultsGrid'
 import MatrixText from './components/MatrixText'
 import ErrorBoundary from './components/ErrorBoundary'
 import { useScraper } from './hooks/useScraper'
-import type { Product } from './types'
+import type { Product, SearchRequest } from './types'
 import './styles/cyberpunk.css'
 
 function App() {
@@ -13,14 +13,15 @@ function App() {
   const [error, setError] = useState<string | null>(null)
   const { searchProducts } = useScraper()
 
-  const handleSearch = async (query: string, filters: any) => {
+  const handleSearch = async (query: string, filters: Partial<SearchRequest>) => {
     setLoading(true)
     setError(null)
     try {
       const results = await searchProducts(query, filters)
       setProducts(results.products || [])
-    } catch (err: any) {
-      setError(err.message || 'Failed to search products')
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to search products'
+      setError(errorMessage)
       setProducts([])
     } finally {
       setLoading(false)

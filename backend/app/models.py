@@ -1,8 +1,7 @@
 """Data models for the application"""
 
 from typing import Optional, List
-from pydantic import BaseModel, HttpUrl, Field
-from datetime import datetime
+from pydantic import BaseModel, Field
 
 
 class Product(BaseModel):

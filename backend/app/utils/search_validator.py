@@ -1,10 +1,13 @@
 """Search validation service using DuckDuckGo API"""
 
+import logging
 import httpx
 import asyncio
 import time
 from typing import Dict, List, Optional, Any, Tuple
 from app.config import config
+
+logger = logging.getLogger(__name__)
 
 
 class SearchValidator:
@@ -81,7 +84,7 @@ class SearchValidator:
             return result
             
         except Exception as e:
-            print(f"Error validating query '{query}': {e}")
+            logger.warning(f"Error validating query '{query}': {e}")
             # Return a permissive result on error (don't block searches)
             return {
                 "is_valid": True,  # Allow search even if validation fails
@@ -117,7 +120,7 @@ class SearchValidator:
                 return suggestions[:10]  # Limit suggestions
                 
         except Exception as e:
-            print(f"Error getting suggestions for '{query}': {e}")
+            logger.warning(f"Error getting suggestions for '{query}': {e}")
             return []
     
     async def _check_has_results(self, query: str) -> bool:
@@ -147,7 +150,7 @@ class SearchValidator:
                 return has_abstract or has_answer or has_related
                 
         except Exception as e:
-            print(f"Error checking results for '{query}': {e}")
+            logger.warning(f"Error checking results for '{query}': {e}")
             return False
     
     async def _get_cached_validation(self, cache_key: str) -> Optional[Dict[str, Any]]:
