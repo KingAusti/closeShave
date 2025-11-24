@@ -32,6 +32,11 @@
   "shipping": {
     "enabled": true,
     "default_cost": 0.0
+  },
+  "validation": {
+    "enabled": true,
+    "cache_ttl_minutes": 30,
+    "timeout": 10
   }
 }
 

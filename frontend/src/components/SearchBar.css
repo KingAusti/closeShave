@@ -83,6 +83,64 @@
   cursor: pointer;
 }
 
+.search-input-wrapper {
+  position: relative;
+}
+
+.validation-valid {
+  border-color: var(--neon-green) !important;
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.3) !important;
+}
+
+.validation-warning {
+  border-color: #ffaa00 !important;
+  box-shadow: 0 0 10px rgba(255, 170, 0, 0.3) !important;
+}
+
+.validation-invalid {
+  border-color: #ff4444 !important;
+  box-shadow: 0 0 10px rgba(255, 68, 68, 0.3) !important;
+}
+
+.validation-indicator {
+  pointer-events: none;
+  user-select: none;
+}
+
+.validation-indicator.validation-valid {
+  color: var(--neon-green);
+}
+
+.validation-indicator.validation-warning {
+  color: #ffaa00;
+}
+
+.validation-indicator.validation-invalid {
+  color: #ff4444;
+}
+
+.suggestions-dropdown {
+  scrollbar-width: thin;
+  scrollbar-color: var(--neon-green) var(--dark-panel);
+}
+
+.suggestions-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.suggestions-dropdown::-webkit-scrollbar-track {
+  background: var(--dark-panel);
+}
+
+.suggestions-dropdown::-webkit-scrollbar-thumb {
+  background: var(--neon-green);
+  border-radius: 3px;
+}
+
+.suggestion-item {
+  font-size: 0.9rem;
+}
+
 @media (max-width: 768px) {
   .search-input-group {
     flex-direction: column;

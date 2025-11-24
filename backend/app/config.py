@@ -96,6 +96,18 @@ class Config:
     def is_shipping_enabled(self) -> bool:
         """Check if shipping calculation is enabled"""
         return self.settings.get("shipping", {}).get("enabled", True)
+    
+    def is_validation_enabled(self) -> bool:
+        """Check if search validation is enabled"""
+        return self.settings.get("validation", {}).get("enabled", True)
+    
+    def get_validation_cache_ttl(self) -> int:
+        """Get validation cache TTL in minutes"""
+        return self.settings.get("validation", {}).get("cache_ttl_minutes", 30)
+    
+    def get_validation_timeout(self) -> int:
+        """Get validation request timeout in seconds"""
+        return self.settings.get("validation", {}).get("timeout", 10)
 
 
 # Global config instance

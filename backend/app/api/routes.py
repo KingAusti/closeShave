@@ -8,8 +8,9 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 import httpx
 
-from app.models import SearchRequest, SearchResponse, Product, MerchantInfo, HealthResponse
+from app.models import SearchRequest, SearchResponse, Product, MerchantInfo, HealthResponse, ValidationRequest, ValidationResponse
 from app.config import config
+from app.utils.search_validator import search_validator
 from app.scrapers import (
     AmazonScraper, EbayScraper, WalmartScraper,
     TargetScraper, BestBuyScraper, NeweggScraper
@@ -69,10 +70,37 @@ async def enrich_product_with_tax_shipping(product: Product, location: Optional[
     })
 
 
+@router.post("/api/validate", response_model=ValidationResponse)
+async def validate_search(request: ValidationRequest):
+    """Validate a search query and get suggestions"""
+    if not config.is_validation_enabled():
+        # Return permissive result if validation is disabled
+        return ValidationResponse(
+            is_valid=True,
+            has_results=True,
+            suggestions=[],
+            confidence=0.5
+        )
+    
+    result = await search_validator.validate_query(request.query)
+    return ValidationResponse(**result)
+
+
 @router.post("/api/search", response_model=SearchResponse)
 async def search_products(request: SearchRequest):
     """Search for products across merchants"""
     start_time = time.time()
+    
+    # Optional pre-validation (non-blocking)
+    validation_result = None
+    if config.is_validation_enabled():
+        try:
+            validation_result = await search_validator.validate_query(request.query)
+            # Log validation result but don't block search
+            if not validation_result.get("is_valid", True):
+                print(f"Warning: Query '{request.query}' may not return good results")
+        except Exception as e:
+            print(f"Validation error (non-blocking): {e}")
     
     # Determine which merchants to search
     merchants_to_search = request.merchants or []

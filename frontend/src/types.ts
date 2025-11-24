@@ -41,3 +41,14 @@ export interface SearchResponse {
   }
 }
 
+export interface ValidationRequest {
+  query: string
+}
+
+export interface ValidationResponse {
+  is_valid: boolean
+  has_results: boolean
+  suggestions: string[]
+  confidence: number
+}
+
