@@ -81,17 +81,25 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
 
   const validationStatus = getValidationStatus()
 
+  const bothFieldsEmpty = !query && !barcode
+
   return (
     <form className="search-bar" onSubmit={handleSubmit}>
+      {bothFieldsEmpty && (
+        <div className="requirement-notice">
+          <span className="requirement-asterisk">*</span>
+          <span className="requirement-text">Either Product Search OR Barcode is required</span>
+        </div>
+      )}
       <div className="search-input-group">
         <div className="search-input-wrapper" style={{ position: 'relative', flex: 1, minWidth: '300px' }}>
-          <label className="field-label required">
+          <label className="field-label">
             Product Search
             <span className="help-text">Enter a product name, description, or keywords</span>
           </label>
           <input
             type="text"
-            className={`search-input neon-input ${validationStatus ? `validation-${validationStatus}` : ''} ${!query && !barcode ? 'required-empty' : ''}`}
+            className={`search-input neon-input ${validationStatus ? `validation-${validationStatus}` : ''} ${bothFieldsEmpty ? 'required-empty' : ''}`}
             placeholder="Search for products..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -172,13 +180,13 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
         <div className="barcode-group">
           <span className="barcode-label">or</span>
           <div className="barcode-wrapper">
-            <label className="field-label required">
+            <label className="field-label">
               Barcode/UPC
               <span className="help-text">Enter product barcode or UPC code</span>
             </label>
             <input
               type="text"
-              className={`barcode-input neon-input ${!query && !barcode ? 'required-empty' : ''}`}
+              className={`barcode-input neon-input ${bothFieldsEmpty ? 'required-empty' : ''}`}
               placeholder="Barcode/UPC"
               value={barcode}
               onChange={(e) => setBarcode(e.target.value)}
