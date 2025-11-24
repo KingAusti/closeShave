@@ -5,11 +5,11 @@
 #   docker-compose -f docker-compose.public.yml up -d
 #
 # Or use the install script:
-#   curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/closeshave/main/scripts/install-public.sh | bash
+#   GITHUB_USERNAME=your-github-username bash <(curl -fsSL https://raw.githubusercontent.com/your-github-username/closeshave/main/scripts/install-public.sh)
 
 services:
   backend:
-    image: closeshave/backend:latest
+    image: YOUR_DOCKERHUB_USERNAME/backend:latest
     container_name: closeshave-backend
     ports:
       - "8000:8000"
@@ -30,7 +30,7 @@ services:
       - closeshave-network
 
   frontend:
-    image: closeshave/frontend:latest
+    image: YOUR_DOCKERHUB_USERNAME/frontend:latest
     container_name: closeshave-frontend
     ports:
       - "80:80"
