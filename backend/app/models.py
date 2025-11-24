@@ -58,3 +58,16 @@ class HealthResponse(BaseModel):
     version: str
     merchants: List[MerchantInfo]
 
+
+class ValidationRequest(BaseModel):
+    """Search validation request model"""
+    query: str = Field(..., min_length=1, description="Search query to validate")
+
+
+class ValidationResponse(BaseModel):
+    """Search validation response model"""
+    is_valid: bool = Field(description="Whether the query is valid")
+    has_results: bool = Field(description="Whether the query returns results")
+    suggestions: List[str] = Field(default_factory=list, description="Suggested search terms")
+    confidence: float = Field(ge=0.0, le=1.0, description="Confidence score (0.0 to 1.0)")
+
