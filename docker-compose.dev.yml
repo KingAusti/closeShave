@@ -35,7 +35,9 @@ services:
       - "5173:5173"
     volumes:
       - ./frontend:/app
-      - ./frontend/node_modules:/app/node_modules
+      # Use Docker volume for node_modules to avoid platform compatibility issues
+      # Native bindings must be compiled for the container's Linux environment
+      - frontend-node-modules:/app/node_modules
       - /app/dist
     environment:
       - VITE_API_URL=http://localhost:8000
@@ -53,4 +55,5 @@ networks:
 volumes:
   backend-data:
   backend-logs:
+  frontend-node-modules:
 
