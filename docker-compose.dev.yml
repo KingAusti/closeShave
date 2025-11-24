@@ -1,0 +1,63 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: closeshave-backend-dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./backend/data:/app/data
+      - ./backend/logs:/app/logs
+      - ./backend/config:/app/config
+      # Preserve virtual environment from image
+      - /opt/venv
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ENVIRONMENT=development
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - closeshave-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: closeshave-frontend-dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      # Use Docker volume for node_modules to avoid platform compatibility issues
+      # Native bindings must be compiled for the container's Linux environment
+      - frontend-node-modules:/app/node_modules
+      - /app/dist
+    environment:
+      # Use empty string to use relative paths (Vite proxy handles /api routing)
+      # The browser will use the proxy, which targets the backend service
+      - VITE_API_URL=
+      # Vite dev server proxy target - use Docker service name for inter-container communication
+      - VITE_API_BACKEND_URL=http://backend:8000
+      - NODE_ENV=development
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - closeshave-network
+
+networks:
+  closeshave-network:
+    driver: bridge
+
+volumes:
+  backend-data:
+  backend-logs:
+  frontend-node-modules:
+

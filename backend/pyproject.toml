@@ -22,6 +22,7 @@ dev = [
     "mypy>=1.7.0",
     "pytest>=7.4.0",
     "pytest-asyncio>=0.21.0",
+    "bandit>=1.7.5",
 ]
 
 [build-system]
@@ -36,8 +37,28 @@ line-length = 100
 target-version = "py310"
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "N", "W", "UP"]
-ignore = []
+select = [
+    "E",      # pycodestyle errors
+    "F",      # pyflakes
+    "I",      # isort
+    "N",      # pep8-naming
+    "W",      # pycodestyle warnings
+    "UP",     # pyupgrade
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "SIM",    # flake8-simplify
+    "TCH",    # flake8-type-checking
+    "ARG",    # flake8-unused-arguments
+    "PIE",    # flake8-pie
+    "PL",     # Pylint
+    "TRY",    # tryceratops
+    "RUF",    # Ruff-specific rules
+]
+ignore = [
+    "PLR0913",  # Too many arguments (allow for API routes)
+    "PLR0912",  # Too many branches (allow for complex logic)
+    "TRY003",   # Avoid specifying long messages outside the exception class
+]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -49,4 +70,16 @@ warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
 ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+addopts = "-v --tb=short"
+
+[tool.bandit]
+exclude_dirs = ["tests", ".venv", "venv", "env"]
+skips = ["B101"]  # Skip assert_used (needed for tests)
 

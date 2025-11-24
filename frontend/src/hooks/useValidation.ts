@@ -73,13 +73,15 @@ export const useValidation = () => {
           setValidationResult(response.data)
         }
         return response.data
-      } catch (error: any) {
+      } catch (error) {
         // Ignore abort/cancellation errors
         const isCancelled = 
           axios.isCancel(error) || 
-          error.name === 'AbortError' || 
-          error.name === 'CanceledError' ||
-          error.code === 'ERR_CANCELED'
+          (error instanceof Error && (
+            error.name === 'AbortError' || 
+            error.name === 'CanceledError'
+          )) ||
+          (error && typeof error === 'object' && 'code' in error && error.code === 'ERR_CANCELED')
         
         if (isCancelled) {
           // Request was cancelled, return a neutral result
@@ -89,6 +91,13 @@ export const useValidation = () => {
             suggestions: [],
             confidence: 0.5
           }
+        }
+        
+        // Log validation errors but don't block searches
+        if (error instanceof Error) {
+          console.warn('Validation error (non-blocking):', error.message)
+        } else {
+          console.warn('Validation error (non-blocking):', error)
         }
         
         // Only update state on real errors if this is still the current query

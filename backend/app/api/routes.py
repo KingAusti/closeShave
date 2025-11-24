@@ -3,6 +3,7 @@
 import time
 import hashlib
 import asyncio
+import logging
 from typing import List, Optional, Dict, Any
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
@@ -18,6 +19,9 @@ from app.scrapers import (
 from app.utils.database import db
 from app.utils.geolocation import geolocation_service
 from app.utils.price_parser import PriceParser
+from app.exceptions import ValidationError, ScraperError, DatabaseError, ImageProxyError
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -73,18 +77,27 @@ async def enrich_product_with_tax_shipping(product: Product, location: Optional[
 @router.post("/api/validate", response_model=ValidationResponse)
 async def validate_search(request: ValidationRequest):
     """Validate a search query and get suggestions"""
-    if not config.is_validation_enabled():
-        # Return permissive result if validation is disabled
-        # has_results=False since no actual validation was performed
-        return ValidationResponse(
-            is_valid=True,
-            has_results=False,
-            suggestions=[],
-            confidence=0.5
-        )
-    
-    result = await search_validator.validate_query(request.query)
-    return ValidationResponse(**result)
+    try:
+        if not request.query or not request.query.strip():
+            raise ValidationError("Query cannot be empty")
+        
+        if not config.is_validation_enabled():
+            # Return permissive result if validation is disabled
+            # has_results=False since no actual validation was performed
+            return ValidationResponse(
+                is_valid=True,
+                has_results=False,
+                suggestions=[],
+                confidence=0.5
+            )
+        
+        result = await search_validator.validate_query(request.query)
+        return ValidationResponse(**result)
+    except ValidationError:
+        raise
+    except Exception as e:
+        logger.error(f"Error validating query: {e}", exc_info=True)
+        raise ValidationError(f"Failed to validate query: {str(e)}")
 
 
 @router.post("/api/search", response_model=SearchResponse)
@@ -151,19 +164,23 @@ async def search_products(request: SearchRequest):
                     products = await scraper.search(request.query, request.max_results)
                     # Cache results
                     if config.is_cache_enabled():
-                        cache_key = get_cache_key(request.query, m, {
-                            "max_results": request.max_results,
-                            "min_price": request.min_price,
-                            "max_price": request.max_price,
-                        })
-                        await db.cache_search(
-                            cache_key, request.query, m,
-                            [p.model_dump() for p in products],
-                            config.get_cache_ttl_hours()
-                        )
+                        try:
+                            cache_key = get_cache_key(request.query, m, {
+                                "max_results": request.max_results,
+                                "min_price": request.min_price,
+                                "max_price": request.max_price,
+                            })
+                            await db.cache_search(
+                                cache_key, request.query, m,
+                                [p.model_dump() for p in products],
+                                config.get_cache_ttl_hours()
+                            )
+                        except Exception as cache_error:
+                            logger.warning(f"Failed to cache results for {m}: {cache_error}")
                     return products
             except Exception as e:
-                print(f"Error searching {m}: {e}")
+                logger.error(f"Error searching {m}: {e}", exc_info=True)
+                # Don't fail the entire request if one merchant fails
                 return []
         
         tasks.append(search_merchant(merchant, scraper_class))
@@ -260,17 +277,18 @@ async def proxy_image(url: str):
     # Validate URL to prevent SSRF attacks
     try:
         parsed = urlparse(url)
-    except Exception:
-        raise HTTPException(status_code=400, detail="Invalid URL")
+    except Exception as e:
+        logger.warning(f"Invalid URL in image proxy: {url}", exc_info=True)
+        raise ImageProxyError("Invalid URL format", status_code=400)
     
     # Only allow HTTP and HTTPS protocols
     if parsed.scheme not in ('http', 'https'):
-        raise HTTPException(status_code=400, detail="Only HTTP and HTTPS URLs are allowed")
+        raise ImageProxyError("Only HTTP and HTTPS URLs are allowed", status_code=400)
     
     # Block private/internal IP addresses and localhost
     hostname = parsed.hostname
     if not hostname:
-        raise HTTPException(status_code=400, detail="Invalid hostname")
+        raise ImageProxyError("Invalid hostname", status_code=400)
     
     # Block localhost and private IP ranges
     blocked_hosts = {
@@ -280,11 +298,11 @@ async def proxy_image(url: str):
     }
     
     if hostname.lower() in blocked_hosts:
-        raise HTTPException(status_code=403, detail="Access to this host is not allowed")
+        raise ImageProxyError("Access to this host is not allowed", status_code=403)
     
     # Block private IP ranges (10.x.x.x, 172.16-31.x.x, 192.168.x.x)
     if hostname.startswith('10.') or hostname.startswith('192.168.'):
-        raise HTTPException(status_code=403, detail="Access to private IP ranges is not allowed")
+        raise ImageProxyError("Access to private IP ranges is not allowed", status_code=403)
     
     if hostname.startswith('172.'):
         parts = hostname.split('.')
@@ -292,7 +310,7 @@ async def proxy_image(url: str):
             try:
                 second_octet = int(parts[1])
                 if 16 <= second_octet <= 31:
-                    raise HTTPException(status_code=403, detail="Access to private IP ranges is not allowed")
+                    raise ImageProxyError("Access to private IP ranges is not allowed", status_code=403)
             except ValueError:
                 pass
     
@@ -322,7 +340,7 @@ async def proxy_image(url: str):
                 break
     
     if not is_allowed:
-        raise HTTPException(status_code=403, detail="Image host not in allowed list")
+        raise ImageProxyError("Image host not in allowed list", status_code=403)
     
     # Helper function to validate redirect URLs
     def validate_redirect_url(redirect_url: str) -> bool:
@@ -382,7 +400,7 @@ async def proxy_image(url: str):
                 # Get redirect location
                 redirect_url = response.headers.get('location')
                 if not redirect_url:
-                    raise HTTPException(status_code=400, detail="Invalid redirect")
+                    raise ImageProxyError("Invalid redirect", status_code=400)
                 
                 # Make redirect URL absolute if relative
                 if not redirect_url.startswith(('http://', 'https://')):
@@ -391,30 +409,39 @@ async def proxy_image(url: str):
                 
                 # Validate redirect URL
                 if not validate_redirect_url(redirect_url):
-                    raise HTTPException(status_code=403, detail="Redirect to unauthorized host")
+                    raise ImageProxyError("Redirect to unauthorized host", status_code=403)
                 
                 current_url = redirect_url
             
             if response is None:
-                raise HTTPException(status_code=500, detail="Failed to fetch image")
+                raise ImageProxyError("Failed to fetch image", status_code=502)
             
             response.raise_for_status()
             
             # Validate content type is an image
             content_type = response.headers.get("content-type", "").lower()
             if not content_type.startswith("image/"):
-                raise HTTPException(status_code=400, detail="URL does not point to an image")
+                raise ImageProxyError("URL does not point to an image", status_code=400)
             
             return StreamingResponse(
                 iter([response.content]),
                 media_type=content_type
             )
-    except httpx.HTTPStatusError as e:
-        raise HTTPException(status_code=e.response.status_code, detail="Image not found")
-    except httpx.HTTPError:
-        raise HTTPException(status_code=404, detail="Image not found")
-    except HTTPException:
+    except ImageProxyError:
         raise
-    except Exception:
-        raise HTTPException(status_code=500, detail="Failed to fetch image")
+    except httpx.HTTPStatusError as e:
+        logger.warning(f"HTTP error fetching image: {e.response.status_code}")
+        # Map HTTP status codes appropriately
+        if e.response.status_code == 404:
+            raise ImageProxyError(f"Image not found (HTTP {e.response.status_code})", status_code=404)
+        elif e.response.status_code in (401, 403):
+            raise ImageProxyError(f"Access denied (HTTP {e.response.status_code})", status_code=403)
+        else:
+            raise ImageProxyError(f"Failed to fetch image (HTTP {e.response.status_code})", status_code=502)
+    except httpx.HTTPError as e:
+        logger.warning(f"HTTP error fetching image: {e}")
+        raise ImageProxyError("Failed to fetch image", status_code=502)
+    except Exception as e:
+        logger.error(f"Unexpected error in image proxy: {e}", exc_info=True)
+        raise ImageProxyError("Failed to fetch image", status_code=502)
 

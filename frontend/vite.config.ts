@@ -36,9 +36,11 @@ export default defineConfig({
   ],
   server: {
     port: 5173,
+    host: '0.0.0.0', // Allow external connections
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        // In Docker, use service name; locally, use localhost
+        target: process.env.VITE_API_BACKEND_URL || 'http://localhost:8000',
         changeOrigin: true
       }
     }
