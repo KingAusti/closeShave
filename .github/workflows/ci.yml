@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, develop, docker-hub-bugs]
+    branches: [main, develop]
   pull_request:
-    branches: [main, develop, docker-hub-bugs]
+    branches: [main, develop]
 
 jobs:
   lint-python:
