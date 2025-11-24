@@ -58,6 +58,9 @@ describe('useScraper', () => {
         query: 'laptop',
         max_results: 20,
         include_out_of_stock: true,
+      }),
+      expect.objectContaining({
+        timeout: 60000,
       })
     )
   })
