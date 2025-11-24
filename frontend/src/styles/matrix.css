@@ -15,6 +15,7 @@
   position: relative;
   color: var(--neon-green);
   font-size: inherit;
+  animation: cyberpunk-flicker 0.15s infinite;
 }
 
 .glitch::before,
@@ -25,40 +26,129 @@
   left: 0;
   width: 100%;
   height: 100%;
+  opacity: 0.8;
 }
 
 .glitch::before {
-  left: 2px;
-  text-shadow: -2px 0 var(--neon-magenta);
+  left: 3px;
+  text-shadow: 
+    -3px 0 var(--neon-magenta),
+    3px 3px var(--neon-cyan);
   clip: rect(44px, 450px, 56px, 0);
-  animation: glitch-anim 5s infinite linear alternate-reverse;
+  animation: glitch-anim-1 0.3s infinite linear alternate-reverse, color-shift-1 0.5s infinite;
 }
 
 .glitch::after {
-  left: -2px;
-  text-shadow: -2px 0 var(--neon-cyan);
+  left: -3px;
+  text-shadow: 
+    3px 0 var(--neon-cyan),
+    -3px -3px var(--neon-magenta);
   clip: rect(44px, 450px, 56px, 0);
-  animation: glitch-anim 1s infinite linear alternate-reverse;
+  animation: glitch-anim-2 0.2s infinite linear alternate-reverse, color-shift-2 0.4s infinite;
 }
 
-@keyframes glitch-anim {
+@keyframes glitch-anim-1 {
   0% {
     clip: rect(31px, 9999px, 94px, 0);
+    transform: translate(0);
   }
   20% {
     clip: rect(54px, 9999px, 66px, 0);
+    transform: translate(-2px, 2px);
   }
   40% {
     clip: rect(28px, 9999px, 99px, 0);
+    transform: translate(2px, -2px);
   }
   60% {
     clip: rect(83px, 9999px, 94px, 0);
+    transform: translate(-1px, 1px);
   }
   80% {
     clip: rect(23px, 9999px, 85px, 0);
+    transform: translate(1px, -1px);
   }
   100% {
     clip: rect(54px, 9999px, 98px, 0);
+    transform: translate(0);
+  }
+}
+
+@keyframes glitch-anim-2 {
+  0% {
+    clip: rect(65px, 9999px, 100px, 0);
+    transform: translate(0);
+  }
+  20% {
+    clip: rect(41px, 9999px, 74px, 0);
+    transform: translate(2px, -2px);
+  }
+  40% {
+    clip: rect(66px, 9999px, 99px, 0);
+    transform: translate(-2px, 2px);
+  }
+  60% {
+    clip: rect(93px, 9999px, 98px, 0);
+    transform: translate(1px, 1px);
+  }
+  80% {
+    clip: rect(76px, 9999px, 92px, 0);
+    transform: translate(-1px, -1px);
+  }
+  100% {
+    clip: rect(54px, 9999px, 98px, 0);
+    transform: translate(0);
+  }
+}
+
+@keyframes color-shift-1 {
+  0%, 100% {
+    color: var(--neon-magenta);
+    opacity: 0.8;
+  }
+  50% {
+    color: var(--neon-cyan);
+    opacity: 0.6;
+  }
+}
+
+@keyframes color-shift-2 {
+  0%, 100% {
+    color: var(--neon-cyan);
+    opacity: 0.8;
+  }
+  50% {
+    color: var(--neon-green);
+    opacity: 0.6;
+  }
+}
+
+@keyframes cyberpunk-flicker {
+  0%, 100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  2% {
+    opacity: 0.9;
+    filter: brightness(1.2);
+  }
+  4% {
+    opacity: 1;
+    filter: brightness(0.9);
+  }
+  6% {
+    opacity: 0.95;
+    filter: brightness(1.1);
+  }
+  8% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+  50% {
+    opacity: 0.98;
+  }
+  75% {
+    opacity: 1;
   }
 }
 

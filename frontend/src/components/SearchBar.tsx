@@ -85,9 +85,13 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
     <form className="search-bar" onSubmit={handleSubmit}>
       <div className="search-input-group">
         <div className="search-input-wrapper" style={{ position: 'relative', flex: 1, minWidth: '300px' }}>
+          <label className="field-label required">
+            Product Search
+            <span className="help-text">Enter a product name, description, or keywords</span>
+          </label>
           <input
             type="text"
-            className={`search-input neon-input ${validationStatus ? `validation-${validationStatus}` : ''}`}
+            className={`search-input neon-input ${validationStatus ? `validation-${validationStatus}` : ''} ${!query && !barcode ? 'required-empty' : ''}`}
             placeholder="Search for products..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -167,14 +171,20 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
         </div>
         <div className="barcode-group">
           <span className="barcode-label">or</span>
-          <input
-            type="text"
-            className="barcode-input neon-input"
-            placeholder="Barcode/UPC"
-            value={barcode}
-            onChange={(e) => setBarcode(e.target.value)}
-            disabled={loading || !!query}
-          />
+          <div className="barcode-wrapper">
+            <label className="field-label required">
+              Barcode/UPC
+              <span className="help-text">Enter product barcode or UPC code</span>
+            </label>
+            <input
+              type="text"
+              className={`barcode-input neon-input ${!query && !barcode ? 'required-empty' : ''}`}
+              placeholder="Barcode/UPC"
+              value={barcode}
+              onChange={(e) => setBarcode(e.target.value)}
+              disabled={loading || !!query}
+            />
+          </div>
         </div>
         <button
           type="submit"
@@ -187,27 +197,40 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
       
       <div className="filters">
         <div className="filter-group">
-          <label>Min Price</label>
+          <label className="field-label">
+            Min Price
+            <span className="help-text">Minimum price filter (optional)</span>
+          </label>
           <input
             type="number"
             className="filter-input neon-input"
             value={minPrice}
             onChange={(e) => setMinPrice(e.target.value)}
             placeholder="$0.00"
+            min="0"
+            step="0.01"
           />
         </div>
         <div className="filter-group">
-          <label>Max Price</label>
+          <label className="field-label">
+            Max Price
+            <span className="help-text">Maximum price filter (optional)</span>
+          </label>
           <input
             type="number"
             className="filter-input neon-input"
             value={maxPrice}
             onChange={(e) => setMaxPrice(e.target.value)}
             placeholder="$9999.99"
+            min="0"
+            step="0.01"
           />
         </div>
         <div className="filter-group">
-          <label>Brand</label>
+          <label className="field-label">
+            Brand
+            <span className="help-text">Filter by specific brand (optional)</span>
+          </label>
           <input
             type="text"
             className="filter-input neon-input"
@@ -217,13 +240,14 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
           />
         </div>
         <div className="filter-group checkbox-group">
-          <label>
+          <label className="field-label">
             <input
               type="checkbox"
               checked={includeOutOfStock}
               onChange={(e) => setIncludeOutOfStock(e.target.checked)}
             />
             Include Out of Stock
+            <span className="help-text">Show products that are currently out of stock</span>
           </label>
         </div>
       </div>

@@ -9,6 +9,10 @@
   background: var(--dark-panel);
   border: 2px solid var(--neon-green);
   box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
 .results-title {
@@ -24,6 +28,11 @@
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+.new-search-button {
+  margin-top: 0.5rem;
+  min-width: 200px;
 }
 
 .products-container {

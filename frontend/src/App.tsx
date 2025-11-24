@@ -2,6 +2,7 @@ import { useState } from 'react'
 import SearchBar from './components/SearchBar'
 import ResultsGrid from './components/ResultsGrid'
 import MatrixText from './components/MatrixText'
+import SearchingAnimation from './components/SearchingAnimation'
 import ErrorBoundary from './components/ErrorBoundary'
 import { useScraper } from './hooks/useScraper'
 import type { Product, SearchRequest } from './types'
@@ -11,6 +12,7 @@ function App() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [searchKey, setSearchKey] = useState(0)
   const { searchProducts } = useScraper()
 
   const handleSearch = async (query: string, filters: Partial<SearchRequest>) => {
@@ -28,6 +30,14 @@ function App() {
     }
   }
 
+  const handleNewSearch = () => {
+    setProducts([])
+    setError(null)
+    setSearchKey(prev => prev + 1) // Force SearchBar to reset
+    // Scroll to top to show search bar
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   return (
     <ErrorBoundary>
       <div className="app">
@@ -42,7 +52,11 @@ function App() {
             <p className="subtitle">Find the cheapest products across all merchants</p>
           </header>
           
-          <SearchBar onSearch={handleSearch} loading={loading} />
+          {loading ? (
+            <SearchingAnimation />
+          ) : (
+            <SearchBar key={searchKey} onSearch={handleSearch} loading={loading} />
+          )}
           
           {error && (
             <div className="error-message">
@@ -50,7 +64,7 @@ function App() {
             </div>
           )}
           
-          <ResultsGrid products={products} loading={loading} />
+          <ResultsGrid products={products} loading={loading} onNewSearch={handleNewSearch} />
         </div>
       </div>
     </ErrorBoundary>

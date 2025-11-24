@@ -5,9 +5,10 @@ import './ResultsGrid.css'
 interface ResultsGridProps {
   products: Product[]
   loading: boolean
+  onNewSearch?: () => void
 }
 
-export default function ResultsGrid({ products, loading }: ResultsGridProps) {
+export default function ResultsGrid({ products, loading, onNewSearch }: ResultsGridProps) {
   if (loading) {
     return (
       <div className="results-grid loading">
@@ -32,6 +33,15 @@ export default function ResultsGrid({ products, loading }: ResultsGridProps) {
       <div className="results-header">
         <h2 className="results-title">FOUND {products.length} PRODUCTS</h2>
         <p className="results-subtitle">Sorted by total price (cheapest first)</p>
+        {onNewSearch && (
+          <button 
+            className="new-search-button neon-button"
+            onClick={onNewSearch}
+            type="button"
+          >
+            NEW SEARCH
+          </button>
+        )}
       </div>
       <div className="products-container">
         {products.map((product, index) => (
