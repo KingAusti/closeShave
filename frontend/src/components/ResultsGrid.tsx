@@ -4,22 +4,10 @@ import './ResultsGrid.css'
 
 interface ResultsGridProps {
   products: Product[]
-  loading: boolean
   onNewSearch?: () => void
 }
 
-export default function ResultsGrid({ products, loading, onNewSearch }: ResultsGridProps) {
-  if (loading) {
-    return (
-      <div className="results-grid loading">
-        <div className="loading-spinner">
-          <div className="spinner"></div>
-          <p className="loading-text">SCANNING MERCHANTS...</p>
-        </div>
-      </div>
-    )
-  }
-
+export default function ResultsGrid({ products, onNewSearch }: ResultsGridProps) {
   if (products.length === 0) {
     return (
       <div className="results-grid empty">
