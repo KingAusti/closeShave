@@ -64,7 +64,9 @@ function App() {
             </div>
           )}
           
-          <ResultsGrid products={products} loading={loading} onNewSearch={handleNewSearch} />
+          {!loading && (
+            <ResultsGrid products={products} loading={loading} onNewSearch={handleNewSearch} />
+          )}
         </div>
       </div>
     </ErrorBoundary>
