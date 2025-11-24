@@ -1,0 +1,56 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: closeshave-backend-dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./backend/data:/app/data
+      - ./backend/logs:/app/logs
+      - ./backend/config:/app/config
+      # Preserve virtual environment from image
+      - /opt/venv
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ENVIRONMENT=development
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - closeshave-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: closeshave-frontend-dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - ./frontend/node_modules:/app/node_modules
+      - /app/dist
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - NODE_ENV=development
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - closeshave-network
+
+networks:
+  closeshave-network:
+    driver: bridge
+
+volumes:
+  backend-data:
+  backend-logs:
+

@@ -66,6 +66,27 @@ docker-compose up
 
 ### 💻 Local Development
 
+**Option 1: Docker with Hot Reload (Recommended for Development)**
+
+For development with automatic code reloading:
+
+```bash
+# Start with development Docker Compose (hot reload enabled)
+docker-compose -f docker-compose.dev.yml up
+```
+
+This will:
+- Mount your source code as volumes
+- Enable hot reload for both backend and frontend
+- Backend restarts automatically on code changes
+- Frontend uses Vite HMR for instant updates
+
+Access:
+- Frontend: http://localhost:5173
+- Backend: http://localhost:8000
+
+**Option 2: Local Development (No Docker)**
+
 If you prefer running locally:
 
 ```bash

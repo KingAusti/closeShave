@@ -11,6 +11,8 @@ The project uses automated linting and formatting for both Python (backend) and 
 ### Tools
 - **Ruff**: Fast Python linter and formatter (replaces black, flake8, isort)
 - **MyPy**: Static type checker
+- **Bandit**: Security linter for Python
+- **Pytest**: Testing framework
 
 ### Configuration
 - Configuration in `backend/pyproject.toml` under `[tool.ruff]` and `[tool.mypy]`
@@ -45,6 +47,14 @@ make type-check
 # or
 mypy app
 
+# Security scanning
+bandit -r app
+
+# Run tests
+make test
+# or
+pytest
+
 # Auto-fix issues
 make fix
 ```
@@ -55,6 +65,7 @@ make fix
 - **ESLint**: JavaScript/TypeScript linter
 - **Prettier**: Code formatter
 - **TypeScript**: Built-in type checker
+- **Vitest**: Testing framework
 
 ### Configuration
 - ESLint: `frontend/.eslintrc.cjs`
@@ -83,6 +94,12 @@ npm run format:check
 
 # Type checking
 npm run type-check
+
+# Run tests
+pnpm run test
+
+# Run tests in watch mode
+pnpm run test:watch
 ```
 
 ## Quick Lint Scripts
@@ -110,15 +127,52 @@ chmod +x scripts/lint.sh
 - Pull requests to `main` or `develop` branches
 
 ### What It Checks
-1. **Python Backend:**
+
+The CI workflow runs multiple jobs in parallel:
+
+1. **Backend Linting:**
    - Ruff linting (`ruff check`)
    - Ruff formatting (`ruff format --check`)
-   - MyPy type checking (non-blocking)
+   - MyPy type checking (non-blocking, logs issues)
 
-2. **Frontend:**
-   - ESLint (`npm run lint`)
-   - Prettier formatting (`npm run format:check`)
-   - TypeScript type checking (`npm run type-check`)
+2. **Backend Security:**
+   - Bandit security scanning (`bandit -r app`)
+
+3. **Backend Tests:**
+   - Pytest test suite (`pytest -v`)
+
+4. **Backend Build:**
+   - Verifies backend can start successfully
+
+5. **Frontend Linting:**
+   - ESLint (`pnpm run lint`)
+   - Prettier formatting (`pnpm run format:check`)
+   - TypeScript type checking (`pnpm run type-check`)
+
+6. **Frontend Security:**
+   - pnpm audit for dependency vulnerabilities
+
+7. **Frontend Tests:**
+   - Vitest test suite (`pnpm run test`)
+
+8. **Frontend Build:**
+   - Verifies frontend can build successfully (`pnpm run build`)
+
+### Dependency Installation
+
+The CI workflow automatically installs all required dependencies:
+
+- **Backend:**
+  - Installs Python 3.11
+  - Installs `uv` package manager
+  - Creates virtual environment
+  - Installs all dependencies including dev dependencies
+  - Installs Playwright browsers if needed for tests
+
+- **Frontend:**
+  - Installs Node.js 18
+  - Enables corepack and sets up pnpm 9.0.0
+  - Installs all dependencies with `--frozen-lockfile`
 
 ### Viewing Results
 - Go to the "Actions" tab in your GitHub repository
@@ -213,5 +267,72 @@ Create `.vscode/settings.json`:
 
 4. **Keep dependencies updated:**
    - Backend: `uv pip install -e ".[dev]" --upgrade`
-   - Frontend: `npm update`
+   - Frontend: `pnpm update`
+
+5. **Run tests before committing:**
+   - Backend: `pytest`
+   - Frontend: `pnpm run test`
+
+6. **Check security vulnerabilities:**
+   - Backend: `bandit -r app`
+   - Frontend: `pnpm audit`
+
+## Testing
+
+### Backend Tests
+
+Tests are located in `backend/tests/` and use pytest.
+
+```bash
+cd backend
+source .venv/bin/activate
+pytest -v
+```
+
+### Frontend Tests
+
+Tests are located in `frontend/src/**/__tests__/` and use Vitest.
+
+```bash
+cd frontend
+pnpm run test
+```
+
+For watch mode during development:
+
+```bash
+pnpm run test:watch
+```
+
+### Writing Tests
+
+**Backend:**
+- Use pytest fixtures from `conftest.py`
+- Test files should be named `test_*.py`
+- Test functions should be named `test_*`
+
+**Frontend:**
+- Use Vitest and React Testing Library
+- Test files should be named `*.test.ts` or `*.test.tsx`
+- Place tests in `__tests__` directories next to the code they test
+
+## Docker Hot Reload Development
+
+For local development with hot reload, use the development Docker Compose file:
+
+```bash
+docker-compose -f docker-compose.dev.yml up
+```
+
+This will:
+- Mount source code as volumes for both backend and frontend
+- Enable hot reload on code changes
+- Backend: Uses `uvicorn --reload` for automatic restarts
+- Frontend: Uses Vite dev server with HMR (Hot Module Replacement)
+
+Access:
+- Backend: http://localhost:8000
+- Frontend: http://localhost:5173
+
+Changes to source code will automatically trigger reloads without rebuilding containers.
 
