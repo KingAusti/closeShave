@@ -1,9 +1,38 @@
 .search-bar {
-  background: var(--dark-panel);
-  border: 2px solid var(--neon-green);
+  background: var(--bg-panel);
+  border: 2px solid var(--cp-yellow);
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+  box-shadow: 0 0 30px rgba(252, 232, 3, 0.3), inset 0 0 20px rgba(252, 232, 3, 0.05);
+  clip-path: polygon(0 0,
+      calc(100% - 20px) 0,
+      100% 20px,
+      100% 100%,
+      20px 100%,
+      0 calc(100% - 20px));
+  position: relative;
+}
+
+.search-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  border-top: 2px solid var(--cp-cyan);
+  border-right: 2px solid var(--cp-cyan);
+}
+
+.search-bar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-bottom: 2px solid var(--cp-cyan);
+  border-left: 2px solid var(--cp-cyan);
 }
 
 .search-input-group {
@@ -25,9 +54,12 @@
 }
 
 .barcode-label {
-  color: var(--text-secondary);
+  color: var(--cp-cyan);
   font-size: 0.9rem;
   text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 5px var(--cp-cyan);
 }
 
 .barcode-input {
@@ -43,7 +75,21 @@
   gap: 1.5rem;
   flex-wrap: wrap;
   padding-top: 1.5rem;
-  border-top: 1px solid var(--dark-border);
+  border-top: 2px solid var(--cp-yellow);
+  position: relative;
+}
+
+.filters::before {
+  content: '[ FILTERS ]';
+  position: absolute;
+  top: -12px;
+  left: 1rem;
+  background: var(--bg-panel);
+  padding: 0 0.5rem;
+  color: var(--cp-yellow);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
 }
 
 .filter-group {
@@ -54,9 +100,10 @@
 
 .filter-group label {
   font-size: 0.9rem;
-  color: var(--text-secondary);
+  color: var(--cp-cyan);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
+  font-weight: 600;
 }
 
 .filter-input {
@@ -74,13 +121,20 @@
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.checkbox-group label:hover {
+  color: var(--cp-yellow);
+  text-shadow: 0 0 10px var(--cp-yellow);
 }
 
 .checkbox-group input[type='checkbox'] {
   width: 20px;
   height: 20px;
-  accent-color: var(--neon-green);
+  accent-color: var(--cp-yellow);
   cursor: pointer;
+  border: 2px solid var(--cp-yellow);
 }
 
 .search-input-wrapper {
@@ -88,18 +142,18 @@
 }
 
 .validation-valid {
-  border-color: var(--neon-green) !important;
-  box-shadow: 0 0 10px rgba(0, 255, 65, 0.3) !important;
+  border-color: var(--cp-cyan) !important;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4) !important;
 }
 
 .validation-warning {
-  border-color: #ffaa00 !important;
-  box-shadow: 0 0 10px rgba(255, 170, 0, 0.3) !important;
+  border-color: var(--cp-yellow) !important;
+  box-shadow: 0 0 20px rgba(252, 232, 3, 0.4) !important;
 }
 
 .validation-invalid {
-  border-color: #ff4444 !important;
-  box-shadow: 0 0 10px rgba(255, 68, 68, 0.3) !important;
+  border-color: var(--cp-red) !important;
+  box-shadow: 0 0 20px rgba(234, 30, 99, 0.4) !important;
 }
 
 .validation-indicator {
@@ -108,20 +162,23 @@
 }
 
 .validation-indicator.validation-valid {
-  color: var(--neon-green);
+  color: var(--cp-cyan);
+  text-shadow: 0 0 10px var(--cp-cyan);
 }
 
 .validation-indicator.validation-warning {
-  color: #ffaa00;
+  color: var(--cp-yellow);
+  text-shadow: 0 0 10px var(--cp-yellow);
 }
 
 .validation-indicator.validation-invalid {
-  color: #ff4444;
+  color: var(--cp-red);
+  text-shadow: 0 0 10px var(--cp-red);
 }
 
 .suggestions-dropdown {
   scrollbar-width: thin;
-  scrollbar-color: var(--neon-green) var(--dark-panel);
+  scrollbar-color: var(--cp-yellow) var(--bg-panel);
 }
 
 .suggestions-dropdown::-webkit-scrollbar {
@@ -129,16 +186,22 @@
 }
 
 .suggestions-dropdown::-webkit-scrollbar-track {
-  background: var(--dark-panel);
+  background: var(--bg-panel);
 }
 
 .suggestions-dropdown::-webkit-scrollbar-thumb {
-  background: var(--neon-green);
-  border-radius: 3px;
+  background: var(--cp-yellow);
+  border-radius: 0;
 }
 
 .suggestion-item {
   font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.suggestion-item:hover {
+  background: rgba(252, 232, 3, 0.1);
+  border-left: 3px solid var(--cp-yellow);
 }
 
 @media (max-width: 768px) {
