@@ -1,20 +1,19 @@
 """Scraper modules for different merchants"""
 
-from .base import BaseScraper
 from .amazon import AmazonScraper
-from .ebay import EbayScraper
-from .walmart import WalmartScraper
-from .target import TargetScraper
+from .base import BaseScraper
 from .bestbuy import BestBuyScraper
+from .ebay import EbayScraper
 from .newegg import NeweggScraper
+from .target import TargetScraper
+from .walmart import WalmartScraper
 
 __all__ = [
-    "BaseScraper",
     "AmazonScraper",
-    "EbayScraper",
-    "WalmartScraper",
-    "TargetScraper",
+    "BaseScraper",
     "BestBuyScraper",
+    "EbayScraper",
     "NeweggScraper",
+    "TargetScraper",
+    "WalmartScraper",
 ]
-

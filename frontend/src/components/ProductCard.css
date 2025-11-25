@@ -11,7 +11,7 @@
 
 .product-card:hover {
   border-color: var(--neon-cyan);
-  box-shadow: 
+  box-shadow:
     0 0 20px var(--neon-green),
     0 0 40px rgba(0, 255, 65, 0.3);
   transform: translateY(-5px);
@@ -24,7 +24,7 @@
 
 .product-card.out-of-stock:hover {
   border-color: #ff0000;
-  box-shadow: 
+  box-shadow:
     0 0 20px #ff0000,
     0 0 40px rgba(255, 0, 0, 0.3);
 }
@@ -172,4 +172,3 @@
 .details-toggle:hover {
   background: rgba(0, 255, 65, 0.1);
 }
-

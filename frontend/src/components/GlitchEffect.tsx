@@ -24,4 +24,3 @@ export default function GlitchEffect({ text, className = '' }: GlitchEffectProps
     </span>
   )
 }
-

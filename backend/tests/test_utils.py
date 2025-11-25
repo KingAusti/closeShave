@@ -1,6 +1,5 @@
 """Tests for utility functions"""
 
-import pytest
 from app.utils.price_parser import PriceParser
 
 
@@ -32,13 +31,12 @@ def test_parse_price():
 def test_get_cache_key():
     """Test cache key generation"""
     from app.api.routes import get_cache_key
-    
+
     key1 = get_cache_key("laptop", "amazon", {"max_results": 20})
     key2 = get_cache_key("laptop", "amazon", {"max_results": 20})
     key3 = get_cache_key("laptop", "ebay", {"max_results": 20})
-    
+
     # Same inputs should produce same key
     assert key1 == key2
     # Different inputs should produce different keys
     assert key1 != key3
-

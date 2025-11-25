@@ -76,7 +76,7 @@
   cursor: pointer;
 }
 
-.checkbox-group input[type="checkbox"] {
+.checkbox-group input[type='checkbox'] {
   width: 20px;
   height: 20px;
   accent-color: var(--neon-green);
@@ -145,18 +145,17 @@
   .search-input-group {
     flex-direction: column;
   }
-  
+
   .search-input,
   .barcode-input {
     width: 100%;
   }
-  
+
   .filters {
     flex-direction: column;
   }
-  
+
   .filter-input {
     width: 100%;
   }
 }
-

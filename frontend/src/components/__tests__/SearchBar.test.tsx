@@ -51,4 +51,3 @@ describe('SearchBar', () => {
     expect(submitButton).toBeDisabled()
   })
 })
-

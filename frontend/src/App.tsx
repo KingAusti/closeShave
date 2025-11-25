@@ -41,15 +41,11 @@ function App() {
             </h1>
             <p className="subtitle">Find the cheapest products across all merchants</p>
           </header>
-          
+
           <SearchBar onSearch={handleSearch} loading={loading} />
-          
-          {error && (
-            <div className="error-message">
-              {error}
-            </div>
-          )}
-          
+
+          {error && <div className="error-message">{error}</div>}
+
           <ResultsGrid products={products} loading={loading} />
         </div>
       </div>
@@ -58,4 +54,3 @@ function App() {
 }
 
 export default App
-

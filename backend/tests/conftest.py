@@ -1,8 +1,9 @@
 """Pytest configuration and fixtures"""
 
-import pytest
 import asyncio
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
+
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -30,4 +31,3 @@ async def test_db() -> AsyncGenerator:
 def client():
     """Create test client"""
     return TestClient(app)
-

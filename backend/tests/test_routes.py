@@ -1,6 +1,5 @@
 """Tests for API routes"""
 
-import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -71,13 +70,7 @@ def test_search_products_empty_query():
 
 def test_search_products_valid_query():
     """Test search with valid query"""
-    response = client.post(
-        "/api/search",
-        json={
-            "query": "test product",
-            "max_results": 5
-        }
-    )
+    response = client.post("/api/search", json={"query": "test product", "max_results": 5})
     # Should return 200 (even if no results)
     assert response.status_code == 200
     data = response.json()
@@ -103,4 +96,3 @@ def test_image_proxy_private_ip():
     """Test image proxy with private IP"""
     response = client.get("/api/image-proxy?url=http://127.0.0.1/image.jpg")
     assert response.status_code in [403, 502]
-

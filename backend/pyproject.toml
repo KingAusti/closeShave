@@ -57,7 +57,29 @@ select = [
 ignore = [
     "PLR0913",  # Too many arguments (allow for API routes)
     "PLR0912",  # Too many branches (allow for complex logic)
+    "PLR0911",  # Too many return statements (allow for complex logic)
+    "PLR0915",  # Too many statements (allow for complex logic)
     "TRY003",   # Avoid specifying long messages outside the exception class
+    "PLR2004",  # Magic value in comparison (common in configuration)
+    "ARG005",   # Unused lambda argument (common in lambdas)
+    "W291",     # Trailing whitespace (formatter handles this)
+    "RUF012",   # Mutable class attributes (acceptable for constants)
+    "TRY300",   # Consider moving to else block (stylistic)
+    "TRY301",   # Abstract raise to inner function (stylistic)
+    "B904",     # Raise from err (acceptable for now)
+    "PIE810",   # Call startswith once with tuple (stylistic)
+    "N818",     # Exception naming (legacy code)
+    "PLC0415",  # Import not at top (sometimes needed)
+    "SIM108",   # Use ternary operator (stylistic)
+    "PLW2901",  # Loop variable overwritten (acceptable in enrichment)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = [
+    "PLR2004",  # Magic value in comparison (common in tests)
+    "ARG002",   # Unused method argument (common in test mocks)
+    "ARG005",   # Unused lambda argument (common in test mocks)
+    "PLC0415",  # Import not at top (sometimes needed in tests)
 ]
 
 [tool.ruff.format]

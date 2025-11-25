@@ -35,10 +35,12 @@ export default function ResultsGrid({ products, loading }: ResultsGridProps) {
       </div>
       <div className="products-container">
         {products.map((product, index) => (
-          <ProductCard key={`${product.merchant}-${product.merchant_id || index}`} product={product} />
+          <ProductCard
+            key={`${product.merchant}-${product.merchant_id || index}`}
+            product={product}
+          />
         ))}
       </div>
     </div>
   )
 }
-

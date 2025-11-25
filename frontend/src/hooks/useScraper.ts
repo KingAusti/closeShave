@@ -4,7 +4,8 @@ import type { SearchRequest, SearchResponse } from '../types'
 
 // Use relative path when running in Docker (nginx proxies /api to backend)
 // Otherwise use explicit URL for local development
-const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:8000')
+const API_BASE =
+  import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:8000')
 
 export class ScraperError extends Error {
   constructor(
@@ -35,59 +36,43 @@ export const useScraper = () => {
         query: query.trim(),
         max_results: 20,
         include_out_of_stock: true,
-        ...filters
+        ...filters,
       }
-      
-      const response = await axios.post<SearchResponse>(
-        `${API_BASE}/api/search`,
-        request,
-        {
-          timeout: 60000, // 60 second timeout for searches
-        }
-      )
+
+      const response = await axios.post<SearchResponse>(`${API_BASE}/api/search`, request, {
+        timeout: 60000, // 60 second timeout for searches
+      })
       return response.data
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const axiosError = error as AxiosError<{ error?: string; message?: string; detail?: string }>
+        const axiosError = error as AxiosError<{
+          error?: string
+          message?: string
+          detail?: string
+        }>
         const statusCode = axiosError.response?.status
         const errorData = axiosError.response?.data
-        
+
         // Handle structured error responses
         if (errorData?.error || errorData?.message || errorData?.detail) {
-          const message = errorData.message || errorData.detail || errorData.error || 'Failed to search products'
-          throw new ScraperError(
-            message,
-            statusCode,
-            errorData.error,
-            errorData
-          )
+          const message =
+            errorData.message || errorData.detail || errorData.error || 'Failed to search products'
+          throw new ScraperError(message, statusCode, errorData.error, errorData)
         }
-        
+
         // Handle network errors
         if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
-          throw new ScraperError(
-            'Request timed out. Please try again.',
-            408,
-            'TIMEOUT_ERROR'
-          )
+          throw new ScraperError('Request timed out. Please try again.', 408, 'TIMEOUT_ERROR')
         }
-        
+
         if (error.code === 'ERR_NETWORK' || !error.response) {
-          throw new ScraperError(
-            'Network error. Please check your connection.',
-            0,
-            'NETWORK_ERROR'
-          )
+          throw new ScraperError('Network error. Please check your connection.', 0, 'NETWORK_ERROR')
         }
-        
+
         // Generic HTTP error
-        throw new ScraperError(
-          `Search failed: ${error.message}`,
-          statusCode,
-          'HTTP_ERROR'
-        )
+        throw new ScraperError(`Search failed: ${error.message}`, statusCode, 'HTTP_ERROR')
       }
-      
+
       // Unknown error
       throw new ScraperError(
         error instanceof Error ? error.message : 'An unexpected error occurred',
@@ -101,7 +86,6 @@ export const useScraper = () => {
 
   return {
     searchProducts,
-    loading
+    loading,
   }
 }
-

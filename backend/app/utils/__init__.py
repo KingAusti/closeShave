@@ -1,7 +1,6 @@
 """Utility modules"""
 
-from .rate_limiter import RateLimiter
 from .price_parser import PriceParser
+from .rate_limiter import RateLimiter
 
-__all__ = ["RateLimiter", "PriceParser"]
-
+__all__ = ["PriceParser", "RateLimiter"]

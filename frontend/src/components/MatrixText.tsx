@@ -13,7 +13,8 @@ export default function MatrixText() {
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
 
-    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'
+    const chars =
+      '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'
     const fontSize = 14
     const columns = canvas.width / fontSize
     const drops: number[] = []
@@ -60,4 +61,3 @@ export default function MatrixText() {
 
   return <canvas ref={canvasRef} className="matrix-canvas" />
 }
-

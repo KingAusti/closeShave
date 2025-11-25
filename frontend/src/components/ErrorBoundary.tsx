@@ -69,10 +69,7 @@ class ErrorBoundary extends Component<Props, State> {
                 </pre>
               </details>
             )}
-            <button
-              className="error-boundary-button"
-              onClick={this.handleReset}
-            >
+            <button className="error-boundary-button" onClick={this.handleReset}>
               Try Again
             </button>
           </div>
@@ -85,4 +82,3 @@ class ErrorBoundary extends Component<Props, State> {
 }
 
 export default ErrorBoundary
-

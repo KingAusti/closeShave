@@ -51,4 +51,3 @@ export interface ValidationResponse {
   suggestions: string[]
   confidence: number
 }
-

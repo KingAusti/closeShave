@@ -58,7 +58,7 @@ body {
   font-size: 4rem;
   font-weight: bold;
   color: var(--neon-green);
-  text-shadow: 
+  text-shadow:
     0 0 10px var(--neon-green),
     0 0 20px var(--neon-green),
     0 0 30px var(--neon-green);
@@ -87,7 +87,7 @@ body {
 }
 
 .neon-input:focus {
-  box-shadow: 
+  box-shadow:
     0 0 10px var(--neon-green),
     0 0 20px var(--neon-green),
     inset 0 0 10px rgba(0, 255, 65, 0.1);
@@ -120,7 +120,7 @@ body {
 .neon-button:hover:not(:disabled) {
   background: var(--neon-green);
   color: var(--dark-bg);
-  box-shadow: 
+  box-shadow:
     0 0 20px var(--neon-green),
     0 0 40px var(--neon-green);
   transform: translateY(-2px);
@@ -138,7 +138,7 @@ body {
 /* Neon Text */
 .neon-text {
   color: var(--neon-green);
-  text-shadow: 
+  text-shadow:
     0 0 5px var(--neon-green),
     0 0 10px var(--neon-green);
 }
@@ -172,4 +172,3 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--neon-cyan);
 }
-

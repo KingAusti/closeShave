@@ -2,16 +2,16 @@
 
 import logging
 from logging.handlers import RotatingFileHandler
-from pathlib import Path
+
 from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from fastapi.exceptions import RequestValidationError
 
-from app.config import config, LOGS_DIR
 from app.api.routes import router
-from app.utils.database import db
+from app.config import LOGS_DIR, config
 from app.exceptions import CloseShaveException
+from app.utils.database import db
 
 # Set up logging
 LOGS_DIR.mkdir(exist_ok=True)
@@ -20,11 +20,11 @@ log_file = LOGS_DIR / "scraper.log"
 # Configure logging
 logging.basicConfig(
     level=logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        RotatingFileHandler(log_file, maxBytes=10*1024*1024, backupCount=7),
-        logging.StreamHandler()
-    ]
+        RotatingFileHandler(log_file, maxBytes=10 * 1024 * 1024, backupCount=7),
+        logging.StreamHandler(),
+    ],
 )
 
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI(
     title="CloseShave Web Scraper API",
     description="API for searching products across multiple merchants",
-    version=config.version.get("version", "0.1.0")
+    version=config.version.get("version", "0.1.0"),
 )
 
 # CORS middleware
@@ -84,7 +84,7 @@ async def root():
     return {
         "name": "CloseShave Web Scraper API",
         "version": config.version.get("version", "0.1.0"),
-        "status": "running"
+        "status": "running",
     }
 
 
@@ -99,12 +99,9 @@ async def closeshave_exception_handler(request: Request, exc: CloseShaveExceptio
             "details": exc.details,
             "path": request.url.path,
             "method": request.method,
-        }
+        },
     )
-    return JSONResponse(
-        status_code=exc.status_code,
-        content=exc.to_dict()
-    )
+    return JSONResponse(status_code=exc.status_code, content=exc.to_dict())
 
 
 @app.exception_handler(RequestValidationError)
@@ -116,15 +113,15 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
             "path": request.url.path,
             "method": request.method,
             "errors": exc.errors(),
-        }
+        },
     )
     return JSONResponse(
         status_code=422,
         content={
             "error": "VALIDATION_ERROR",
             "message": "Request validation failed",
-            "details": exc.errors()
-        }
+            "details": exc.errors(),
+        },
     )
 
 
@@ -138,18 +135,15 @@ async def global_exception_handler(request: Request, exc: Exception):
             "path": request.url.path,
             "method": request.method,
             "exception_type": type(exc).__name__,
-        }
+        },
     )
     return JSONResponse(
         status_code=500,
-        content={
-            "error": "INTERNAL_SERVER_ERROR",
-            "message": "An unexpected error occurred"
-        }
+        content={"error": "INTERNAL_SERVER_ERROR", "message": "An unexpected error occurred"},
     )
 
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
 
+    uvicorn.run(app, host="0.0.0.0", port=8000)

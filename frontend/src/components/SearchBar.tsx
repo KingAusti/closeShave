@@ -18,8 +18,13 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
   const [includeOutOfStock, setIncludeOutOfStock] = useState(true)
   const [showSuggestions, setShowSuggestions] = useState(false)
   const suppressAutoShowRef = useRef(false)
-  
-  const { validateQueryDebounced, validationResult, loading: validating, clearValidation } = useValidation()
+
+  const {
+    validateQueryDebounced,
+    validationResult,
+    loading: validating,
+    clearValidation,
+  } = useValidation()
 
   // Validate query as user types (debounced)
   useEffect(() => {
@@ -36,7 +41,7 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
       setShowSuggestions(false)
       suppressAutoShowRef.current = false
     }
-    
+
     // Cleanup function to abort pending requests on unmount
     return () => {
       clearValidation()
@@ -54,7 +59,7 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
       min_price: minPrice ? parseFloat(minPrice) : undefined,
       max_price: maxPrice ? parseFloat(maxPrice) : undefined,
       brand: brand || undefined,
-      include_out_of_stock: includeOutOfStock
+      include_out_of_stock: includeOutOfStock,
     })
   }
 
@@ -68,7 +73,7 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
       min_price: minPrice ? parseFloat(minPrice) : undefined,
       max_price: maxPrice ? parseFloat(maxPrice) : undefined,
       brand: brand || undefined,
-      include_out_of_stock: includeOutOfStock
+      include_out_of_stock: includeOutOfStock,
     })
   }
 
@@ -84,62 +89,77 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
   return (
     <form className="search-bar" onSubmit={handleSubmit}>
       <div className="search-input-group">
-        <div className="search-input-wrapper" style={{ position: 'relative', flex: 1, minWidth: '300px' }}>
+        <div
+          className="search-input-wrapper"
+          style={{ position: 'relative', flex: 1, minWidth: '300px' }}
+        >
           <input
             type="text"
             className={`search-input neon-input ${validationStatus ? `validation-${validationStatus}` : ''}`}
             placeholder="Search for products..."
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={e => setQuery(e.target.value)}
             disabled={loading || !!barcode}
-            onFocus={() => validationResult && validationResult.suggestions.length > 0 && setShowSuggestions(true)}
+            onFocus={() =>
+              validationResult &&
+              validationResult.suggestions.length > 0 &&
+              setShowSuggestions(true)
+            }
             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
           />
           {validating && (
-            <span className="validation-indicator" style={{ 
-              position: 'absolute', 
-              right: '10px', 
-              top: '50%', 
-              transform: 'translateY(-50%)',
-              color: 'var(--neon-green)',
-              fontSize: '0.8rem'
-            }}>
+            <span
+              className="validation-indicator"
+              style={{
+                position: 'absolute',
+                right: '10px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                color: 'var(--neon-green)',
+                fontSize: '0.8rem',
+              }}
+            >
               Validating...
             </span>
           )}
           {validationStatus && !validating && (
-            <span 
+            <span
               className={`validation-indicator validation-${validationStatus}`}
-              style={{ 
-                position: 'absolute', 
-                right: '10px', 
-                top: '50%', 
+              style={{
+                position: 'absolute',
+                right: '10px',
+                top: '50%',
                 transform: 'translateY(-50%)',
-                fontSize: '0.8rem'
+                fontSize: '0.8rem',
               }}
               title={
-                validationStatus === 'valid' ? 'Query looks good!' :
-                validationStatus === 'warning' ? 'Query may have limited results' :
-                'Query may not return results'
+                validationStatus === 'valid'
+                  ? 'Query looks good!'
+                  : validationStatus === 'warning'
+                    ? 'Query may have limited results'
+                    : 'Query may not return results'
               }
             >
               {validationStatus === 'valid' ? '✓' : validationStatus === 'warning' ? '⚠' : '✗'}
             </span>
           )}
           {showSuggestions && validationResult && validationResult.suggestions.length > 0 && (
-            <div className="suggestions-dropdown" style={{
-              position: 'absolute',
-              top: '100%',
-              left: 0,
-              right: 0,
-              background: 'var(--dark-panel)',
-              border: '2px solid var(--neon-green)',
-              borderTop: 'none',
-              maxHeight: '200px',
-              overflowY: 'auto',
-              zIndex: 1000,
-              boxShadow: '0 4px 12px rgba(0, 255, 65, 0.3)'
-            }}>
+            <div
+              className="suggestions-dropdown"
+              style={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                right: 0,
+                background: 'var(--dark-panel)',
+                border: '2px solid var(--neon-green)',
+                borderTop: 'none',
+                maxHeight: '200px',
+                overflowY: 'auto',
+                zIndex: 1000,
+                boxShadow: '0 4px 12px rgba(0, 255, 65, 0.3)',
+              }}
+            >
               {validationResult.suggestions.map((suggestion, index) => (
                 <div
                   key={index}
@@ -148,14 +168,17 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
                   style={{
                     padding: '0.75rem 1rem',
                     cursor: 'pointer',
-                    borderBottom: index < validationResult.suggestions.length - 1 ? '1px solid var(--dark-border)' : 'none',
+                    borderBottom:
+                      index < validationResult.suggestions.length - 1
+                        ? '1px solid var(--dark-border)'
+                        : 'none',
                     color: 'var(--text-primary)',
-                    transition: 'background 0.2s'
+                    transition: 'background 0.2s',
                   }}
-                  onMouseEnter={(e) => {
+                  onMouseEnter={e => {
                     e.currentTarget.style.background = 'rgba(0, 255, 65, 0.1)'
                   }}
-                  onMouseLeave={(e) => {
+                  onMouseLeave={e => {
                     e.currentTarget.style.background = 'transparent'
                   }}
                 >
@@ -172,7 +195,7 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
             className="barcode-input neon-input"
             placeholder="Barcode/UPC"
             value={barcode}
-            onChange={(e) => setBarcode(e.target.value)}
+            onChange={e => setBarcode(e.target.value)}
             disabled={loading || !!query}
           />
         </div>
@@ -184,7 +207,7 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
           {loading ? 'SEARCHING...' : 'SEARCH'}
         </button>
       </div>
-      
+
       <div className="filters">
         <div className="filter-group">
           <label>Min Price</label>
@@ -192,7 +215,7 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
             type="number"
             className="filter-input neon-input"
             value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
+            onChange={e => setMinPrice(e.target.value)}
             placeholder="$0.00"
           />
         </div>
@@ -202,7 +225,7 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
             type="number"
             className="filter-input neon-input"
             value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
+            onChange={e => setMaxPrice(e.target.value)}
             placeholder="$9999.99"
           />
         </div>
@@ -212,7 +235,7 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
             type="text"
             className="filter-input neon-input"
             value={brand}
-            onChange={(e) => setBrand(e.target.value)}
+            onChange={e => setBrand(e.target.value)}
             placeholder="Brand name"
           />
         </div>
@@ -221,7 +244,7 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
             <input
               type="checkbox"
               checked={includeOutOfStock}
-              onChange={(e) => setIncludeOutOfStock(e.target.checked)}
+              onChange={e => setIncludeOutOfStock(e.target.checked)}
             />
             Include Out of Stock
           </label>
@@ -230,4 +253,3 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
     </form>
   )
 }
-

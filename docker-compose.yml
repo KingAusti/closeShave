@@ -5,13 +5,14 @@ services:
       dockerfile: Dockerfile
     container_name: closeshave-backend
     ports:
-      - "8000:8000"
+      - "${BACKEND_PORT:-8000}:8000"
     volumes:
       - ./backend/data:/app/data
       - ./backend/logs:/app/logs
       - ./backend/config:/app/config
     environment:
       - PYTHONUNBUFFERED=1
+      - PORT=8000
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/')"]
@@ -28,9 +29,11 @@ services:
       dockerfile: Dockerfile
     container_name: closeshave-frontend
     ports:
-      - "80:80"
+      - "${FRONTEND_PORT:-80}:80"
     depends_on:
       - backend
+    environment:
+      - BACKEND_URL=http://backend:8000
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]

@@ -14,8 +14,10 @@ const mockedAxios = axios as unknown as {
 describe('useScraper', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-      ; (mockedAxios.isAxiosError as any) = vi.fn((error) => error && typeof error === 'object' && 'isAxiosError' in error)
-      ; (mockedAxios.isCancel as any) = vi.fn(() => false)
+    ;(mockedAxios.isAxiosError as any) = vi.fn(
+      error => error && typeof error === 'object' && 'isAxiosError' in error
+    )
+    ;(mockedAxios.isCancel as any) = vi.fn(() => false)
   })
 
   it('should initialize with loading false', () => {
@@ -26,13 +28,9 @@ describe('useScraper', () => {
   it('should throw error for empty query', async () => {
     const { result } = renderHook(() => useScraper())
 
-    await expect(
-      result.current.searchProducts('')
-    ).rejects.toThrow(ScraperError)
+    await expect(result.current.searchProducts('')).rejects.toThrow(ScraperError)
 
-    await expect(
-      result.current.searchProducts('   ')
-    ).rejects.toThrow(ScraperError)
+    await expect(result.current.searchProducts('   ')).rejects.toThrow(ScraperError)
   })
 
   it('should successfully search products', async () => {
@@ -68,13 +66,11 @@ describe('useScraper', () => {
   it('should handle network errors', async () => {
     const networkError = new Error('Network Error')
     mockedAxios.post.mockRejectedValue(networkError)
-      ; (mockedAxios.isAxiosError as any).mockReturnValue(false)
+    ;(mockedAxios.isAxiosError as any).mockReturnValue(false)
 
     const { result } = renderHook(() => useScraper())
 
-    await expect(
-      result.current.searchProducts('laptop')
-    ).rejects.toThrow(ScraperError)
+    await expect(result.current.searchProducts('laptop')).rejects.toThrow(ScraperError)
   })
 
   it('should handle axios errors with structured response', async () => {
@@ -89,13 +85,10 @@ describe('useScraper', () => {
       isAxiosError: true,
     }
     mockedAxios.post.mockRejectedValue(axiosError)
-      ; (mockedAxios.isAxiosError as any).mockReturnValue(true)
+    ;(mockedAxios.isAxiosError as any).mockReturnValue(true)
 
     const { result } = renderHook(() => useScraper())
 
-    await expect(
-      result.current.searchProducts('laptop')
-    ).rejects.toThrow(ScraperError)
+    await expect(result.current.searchProducts('laptop')).rejects.toThrow(ScraperError)
   })
 })
-
