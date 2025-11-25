@@ -117,6 +117,20 @@ class BaseScraper(ABC):
             return default
         return element.get_text(strip=True) if hasattr(element, 'get_text') else str(element)
     
+    def _resolve_url(self, url: str, base_url: str = "") -> str:
+        """Resolve relative URL to absolute URL"""
+        if not url:
+            return ""
+            
+        if url.startswith('http'):
+            return url
+        elif url.startswith('/'):
+            from urllib.parse import urlparse
+            parsed = urlparse(base_url)
+            return f"{parsed.scheme}://{parsed.netloc}{url}"
+        else:
+            return f"{base_url}/{url}" if base_url else url
+
     def _extract_url(self, element, base_url: str = "") -> str:
         """Extract URL from element"""
         if not element:
@@ -126,15 +140,8 @@ class BaseScraper(ABC):
             href = element.get('href', '')
         else:
             href = str(element)
-        
-        if href.startswith('http'):
-            return href
-        elif href.startswith('/'):
-            from urllib.parse import urlparse
-            parsed = urlparse(base_url)
-            return f"{parsed.scheme}://{parsed.netloc}{href}"
-        else:
-            return f"{base_url}/{href}" if base_url else href
+            
+        return self._resolve_url(href, base_url)
     
     def _extract_image_url(self, element, base_url: str = "") -> str:
         """Extract image URL from element"""
@@ -145,15 +152,8 @@ class BaseScraper(ABC):
             src = element.get('src', '') or element.get('data-src', '')
         else:
             src = str(element)
-        
-        if src.startswith('http'):
-            return src
-        elif src.startswith('/'):
-            from urllib.parse import urlparse
-            parsed = urlparse(base_url)
-            return f"{parsed.scheme}://{parsed.netloc}{src}"
-        else:
-            return f"{base_url}/{src}" if base_url else src
+            
+        return self._resolve_url(src, base_url)
     
     def _determine_availability(self, element) -> str:
         """Determine product availability"""
