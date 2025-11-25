@@ -1,11 +1,11 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import ProductCard from '../ProductCard'
 import type { Product } from '../../types'
 
 const mockProduct: Product = {
-    id: '1',
     title: 'Test Product',
+    price: 100,
     merchant: 'amazon',
     product_url: 'https://amazon.com/product',
     image_url: 'https://amazon.com/image.jpg',
@@ -18,7 +18,6 @@ const mockProduct: Product = {
     brand: 'Test Brand',
     rating: 4.5,
     review_count: 100,
-    timestamp: '2023-01-01T00:00:00Z'
 }
 
 describe('ProductCard', () => {

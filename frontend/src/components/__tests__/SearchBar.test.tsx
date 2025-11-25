@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import SearchBar from '../SearchBar'
 
@@ -11,14 +11,14 @@ describe('SearchBar', () => {
 
   it('should render search input', () => {
     render(<SearchBar onSearch={mockOnSearch} loading={false} />)
-    
+
     const searchInput = screen.getByPlaceholderText(/search/i)
     expect(searchInput).toBeInTheDocument()
   })
 
   it('should call onSearch when form is submitted', async () => {
     render(<SearchBar onSearch={mockOnSearch} loading={false} />)
-    
+
     const searchInput = screen.getByPlaceholderText(/search/i)
     const submitButton = screen.getByRole('button', { name: /search/i })
 
@@ -37,7 +37,7 @@ describe('SearchBar', () => {
 
   it('should not call onSearch with empty query', () => {
     render(<SearchBar onSearch={mockOnSearch} loading={false} />)
-    
+
     const submitButton = screen.getByRole('button', { name: /search/i })
     fireEvent.click(submitButton)
 
@@ -46,7 +46,7 @@ describe('SearchBar', () => {
 
   it('should disable submit button when loading', () => {
     render(<SearchBar onSearch={mockOnSearch} loading={true} />)
-    
+
     const submitButton = screen.getByRole('button', { name: /search/i })
     expect(submitButton).toBeDisabled()
   })
