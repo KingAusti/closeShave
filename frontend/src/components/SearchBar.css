@@ -1,38 +1,24 @@
 .search-bar {
   background: var(--bg-panel);
   border: 2px solid var(--cp-yellow);
+  border-left: 4px solid var(--cp-yellow);
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: 0 0 30px rgba(252, 232, 3, 0.3), inset 0 0 20px rgba(252, 232, 3, 0.05);
-  clip-path: polygon(0 0,
-      calc(100% - 20px) 0,
-      100% 20px,
-      100% 100%,
-      20px 100%,
-      0 calc(100% - 20px));
+  box-shadow: 0 0 30px rgba(255, 239, 0, 0.4), inset 0 0 20px rgba(255, 239, 0, 0.05);
   position: relative;
 }
 
 .search-bar::before {
-  content: '';
+  content: '[ SEARCH PROTOCOL ]';
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 20px;
-  height: 20px;
-  border-top: 2px solid var(--cp-cyan);
-  border-right: 2px solid var(--cp-cyan);
-}
-
-.search-bar::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 20px;
-  height: 20px;
-  border-bottom: 2px solid var(--cp-cyan);
-  border-left: 2px solid var(--cp-cyan);
+  top: -12px;
+  left: 1rem;
+  background: var(--bg-panel);
+  padding: 0 0.5rem;
+  color: var(--cp-yellow);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
 }
 
 .search-input-group {
@@ -55,11 +41,12 @@
 
 .barcode-label {
   color: var(--cp-cyan);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   text-transform: uppercase;
   font-weight: 600;
-  letter-spacing: 0.1em;
-  text-shadow: 0 0 5px var(--cp-cyan);
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 10px var(--cp-cyan);
+  font-family: 'Orbitron', sans-serif;
 }
 
 .barcode-input {
@@ -75,21 +62,21 @@
   gap: 1.5rem;
   flex-wrap: wrap;
   padding-top: 1.5rem;
-  border-top: 2px solid var(--cp-yellow);
+  border-top: 2px solid var(--cp-cyan);
   position: relative;
 }
 
 .filters::before {
-  content: '[ FILTERS ]';
+  content: '[ FILTER MATRIX ]';
   position: absolute;
   top: -12px;
   left: 1rem;
   background: var(--bg-panel);
   padding: 0 0.5rem;
-  color: var(--cp-yellow);
-  font-size: 0.8rem;
+  color: var(--cp-cyan);
+  font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.2em;
 }
 
 .filter-group {
@@ -99,10 +86,11 @@
 }
 
 .filter-group label {
-  font-size: 0.9rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
   color: var(--cp-cyan);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   font-weight: 600;
 }
 
@@ -126,7 +114,7 @@
 
 .checkbox-group label:hover {
   color: var(--cp-yellow);
-  text-shadow: 0 0 10px var(--cp-yellow);
+  text-shadow: 0 0 15px var(--cp-yellow);
 }
 
 .checkbox-group input[type='checkbox'] {
@@ -134,7 +122,6 @@
   height: 20px;
   accent-color: var(--cp-yellow);
   cursor: pointer;
-  border: 2px solid var(--cp-yellow);
 }
 
 .search-input-wrapper {
@@ -143,42 +130,46 @@
 
 .validation-valid {
   border-color: var(--cp-cyan) !important;
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4) !important;
+  box-shadow: 0 0 25px rgba(1, 253, 254, 0.5) !important;
 }
 
 .validation-warning {
   border-color: var(--cp-yellow) !important;
-  box-shadow: 0 0 20px rgba(252, 232, 3, 0.4) !important;
+  box-shadow: 0 0 25px rgba(255, 239, 0, 0.5) !important;
 }
 
 .validation-invalid {
   border-color: var(--cp-red) !important;
-  box-shadow: 0 0 20px rgba(234, 30, 99, 0.4) !important;
+  box-shadow: 0 0 25px rgba(234, 30, 99, 0.5) !important;
 }
 
 .validation-indicator {
   pointer-events: none;
   user-select: none;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
 }
 
 .validation-indicator.validation-valid {
   color: var(--cp-cyan);
-  text-shadow: 0 0 10px var(--cp-cyan);
+  text-shadow: 0 0 15px var(--cp-cyan);
 }
 
 .validation-indicator.validation-warning {
   color: var(--cp-yellow);
-  text-shadow: 0 0 10px var(--cp-yellow);
+  text-shadow: 0 0 15px var(--cp-yellow);
 }
 
 .validation-indicator.validation-invalid {
   color: var(--cp-red);
-  text-shadow: 0 0 10px var(--cp-red);
+  text-shadow: 0 0 15px var(--cp-red);
 }
 
 .suggestions-dropdown {
   scrollbar-width: thin;
   scrollbar-color: var(--cp-yellow) var(--bg-panel);
+  background: var(--bg-panel);
+  border: 2px solid var(--cp-yellow);
 }
 
 .suggestions-dropdown::-webkit-scrollbar {
@@ -191,17 +182,19 @@
 
 .suggestions-dropdown::-webkit-scrollbar-thumb {
   background: var(--cp-yellow);
-  border-radius: 0;
 }
 
 .suggestion-item {
   font-size: 0.9rem;
+  font-family: 'Orbitron', sans-serif;
   transition: all 0.2s ease;
+  padding: 0.5rem;
 }
 
 .suggestion-item:hover {
-  background: rgba(252, 232, 3, 0.1);
+  background: rgba(255, 239, 0, 0.1);
   border-left: 3px solid var(--cp-yellow);
+  color: var(--cp-yellow);
 }
 
 @media (max-width: 768px) {
