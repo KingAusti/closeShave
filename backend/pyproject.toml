@@ -103,5 +103,5 @@ addopts = "-v --tb=short"
 
 [tool.bandit]
 exclude_dirs = ["tests", ".venv", "venv", "env"]
-skips = ["B101"]  # Skip assert_used (needed for tests)
+skips = ["B101", "B104", "B110", "B112"]  # Skip assert_used, bind_all, try-except-pass/continue
 

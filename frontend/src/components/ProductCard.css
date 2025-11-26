@@ -23,7 +23,9 @@
 
 .product-card:hover {
   border-color: var(--cp-cyan);
-  box-shadow: 0 0 50px rgba(1, 253, 254, 0.6), 0 0 80px rgba(255, 239, 0, 0.4);
+  box-shadow:
+    0 0 50px rgba(1, 253, 254, 0.6),
+    0 0 80px rgba(255, 239, 0, 0.4);
   transform: translateY(-5px);
 }
 

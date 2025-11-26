@@ -55,7 +55,7 @@ SCRAPERS = {
 def get_cache_key(query: str, merchant: str, filters: dict[str, Any]) -> str:
     """Generate cache key for search"""
     key_data = f"{query}:{merchant}:{filters!s}"
-    return hashlib.md5(key_data.encode()).hexdigest()
+    return hashlib.sha256(key_data.encode()).hexdigest()
 
 
 async def enrich_product_with_tax_shipping(
@@ -314,7 +314,7 @@ async def proxy_image(url: str):
     blocked_hosts = {
         "localhost",
         "127.0.0.1",
-        "0.0.0.0",
+        "0.0.0.0",  # nosec
         "::1",
         "169.254.169.254",  # AWS metadata
         "metadata.google.internal",  # GCP metadata
