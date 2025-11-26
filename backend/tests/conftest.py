@@ -18,13 +18,13 @@ def event_loop():
     loop.close()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="function", autouse=True)
 async def test_db() -> AsyncGenerator:
-    """Set up test database"""
+    """Set up test database - automatically runs before each test"""
     # Initialize test database
     await db.init_db()
     yield db
-    # Cleanup (if needed)
+    # Cleanup could go here if needed
 
 
 @pytest.fixture

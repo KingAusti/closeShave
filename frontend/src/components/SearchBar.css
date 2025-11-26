@@ -1,9 +1,26 @@
 .search-bar {
-  background: var(--dark-panel);
-  border: 2px solid var(--neon-green);
+  background: var(--bg-panel);
+  border: 2px solid var(--cp-yellow);
+  border-left: 4px solid var(--cp-yellow);
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+  box-shadow:
+    0 0 30px rgba(255, 239, 0, 0.4),
+    inset 0 0 20px rgba(255, 239, 0, 0.05);
+  position: relative;
+}
+
+.search-bar::before {
+  content: '[ SEARCH PROTOCOL ]';
+  position: absolute;
+  top: -12px;
+  left: 1rem;
+  background: var(--bg-panel);
+  padding: 0 0.5rem;
+  color: var(--cp-yellow);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
 }
 
 .search-input-group {
@@ -25,9 +42,13 @@
 }
 
 .barcode-label {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+  color: var(--cp-cyan);
+  font-size: 0.85rem;
   text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 10px var(--cp-cyan);
+  font-family: 'Orbitron', sans-serif;
 }
 
 .barcode-input {
@@ -43,7 +64,21 @@
   gap: 1.5rem;
   flex-wrap: wrap;
   padding-top: 1.5rem;
-  border-top: 1px solid var(--dark-border);
+  border-top: 2px solid var(--cp-cyan);
+  position: relative;
+}
+
+.filters::before {
+  content: '[ FILTER MATRIX ]';
+  position: absolute;
+  top: -12px;
+  left: 1rem;
+  background: var(--bg-panel);
+  padding: 0 0.5rem;
+  color: var(--cp-cyan);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
 }
 
 .filter-group {
@@ -53,10 +88,12 @@
 }
 
 .filter-group label {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  color: var(--cp-cyan);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.15em;
+  font-weight: 600;
 }
 
 .filter-input {
@@ -74,12 +111,18 @@
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.checkbox-group label:hover {
+  color: var(--cp-yellow);
+  text-shadow: 0 0 15px var(--cp-yellow);
 }
 
 .checkbox-group input[type='checkbox'] {
   width: 20px;
   height: 20px;
-  accent-color: var(--neon-green);
+  accent-color: var(--cp-yellow);
   cursor: pointer;
 }
 
@@ -88,40 +131,47 @@
 }
 
 .validation-valid {
-  border-color: var(--neon-green) !important;
-  box-shadow: 0 0 10px rgba(0, 255, 65, 0.3) !important;
+  border-color: var(--cp-cyan) !important;
+  box-shadow: 0 0 25px rgba(1, 253, 254, 0.5) !important;
 }
 
 .validation-warning {
-  border-color: #ffaa00 !important;
-  box-shadow: 0 0 10px rgba(255, 170, 0, 0.3) !important;
+  border-color: var(--cp-yellow) !important;
+  box-shadow: 0 0 25px rgba(255, 239, 0, 0.5) !important;
 }
 
 .validation-invalid {
-  border-color: #ff4444 !important;
-  box-shadow: 0 0 10px rgba(255, 68, 68, 0.3) !important;
+  border-color: var(--cp-red) !important;
+  box-shadow: 0 0 25px rgba(234, 30, 99, 0.5) !important;
 }
 
 .validation-indicator {
   pointer-events: none;
   user-select: none;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
 }
 
 .validation-indicator.validation-valid {
-  color: var(--neon-green);
+  color: var(--cp-cyan);
+  text-shadow: 0 0 15px var(--cp-cyan);
 }
 
 .validation-indicator.validation-warning {
-  color: #ffaa00;
+  color: var(--cp-yellow);
+  text-shadow: 0 0 15px var(--cp-yellow);
 }
 
 .validation-indicator.validation-invalid {
-  color: #ff4444;
+  color: var(--cp-red);
+  text-shadow: 0 0 15px var(--cp-red);
 }
 
 .suggestions-dropdown {
   scrollbar-width: thin;
-  scrollbar-color: var(--neon-green) var(--dark-panel);
+  scrollbar-color: var(--cp-yellow) var(--bg-panel);
+  background: var(--bg-panel);
+  border: 2px solid var(--cp-yellow);
 }
 
 .suggestions-dropdown::-webkit-scrollbar {
@@ -129,16 +179,24 @@
 }
 
 .suggestions-dropdown::-webkit-scrollbar-track {
-  background: var(--dark-panel);
+  background: var(--bg-panel);
 }
 
 .suggestions-dropdown::-webkit-scrollbar-thumb {
-  background: var(--neon-green);
-  border-radius: 3px;
+  background: var(--cp-yellow);
 }
 
 .suggestion-item {
   font-size: 0.9rem;
+  font-family: 'Orbitron', sans-serif;
+  transition: all 0.2s ease;
+  padding: 0.5rem;
+}
+
+.suggestion-item:hover {
+  background: rgba(255, 239, 0, 0.1);
+  border-left: 3px solid var(--cp-yellow);
+  color: var(--cp-yellow);
 }
 
 @media (max-width: 768px) {

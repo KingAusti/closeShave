@@ -16,14 +16,14 @@
 
 .glitch-text::before {
   left: 2px;
-  text-shadow: -2px 0 var(--neon-magenta);
+  text-shadow: -2px 0 var(--cp-magenta);
   clip: rect(44px, 450px, 56px, 0);
   animation: glitch-anim-1 5s infinite linear alternate-reverse;
 }
 
 .glitch-text::after {
   left: -2px;
-  text-shadow: -2px 0 var(--neon-cyan);
+  text-shadow: -2px 0 var(--cp-cyan);
   clip: rect(44px, 450px, 56px, 0);
   animation: glitch-anim-2 1s infinite linear alternate-reverse;
 }
@@ -40,18 +40,23 @@
   0% {
     clip: rect(31px, 9999px, 94px, 0);
   }
+
   20% {
     clip: rect(54px, 9999px, 66px, 0);
   }
+
   40% {
     clip: rect(28px, 9999px, 99px, 0);
   }
+
   60% {
     clip: rect(83px, 9999px, 94px, 0);
   }
+
   80% {
     clip: rect(23px, 9999px, 85px, 0);
   }
+
   100% {
     clip: rect(54px, 9999px, 98px, 0);
   }
@@ -61,18 +66,23 @@
   0% {
     clip: rect(65px, 9999px, 100px, 0);
   }
+
   20% {
     clip: rect(41px, 9999px, 74px, 0);
   }
+
   40% {
     clip: rect(66px, 9999px, 99px, 0);
   }
+
   60% {
     clip: rect(93px, 9999px, 98px, 0);
   }
+
   80% {
     clip: rect(76px, 9999px, 92px, 0);
   }
+
   100% {
     clip: rect(54px, 9999px, 98px, 0);
   }

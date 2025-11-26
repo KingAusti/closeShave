@@ -29,6 +29,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           alt={product.title}
           className="product-image"
           onError={e => {
+            // eslint-disable-next-line no-extra-semi
             ;(e.target as HTMLImageElement).src = product.direct_image_url
           }}
         />
