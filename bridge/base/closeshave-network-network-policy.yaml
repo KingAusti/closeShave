@@ -1,0 +1,24 @@
+#! closeshave-network-network-policy.yaml
+# Generated code, do not edit
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+    name: closeshave-network-network-policy
+    namespace: closeshave-1
+spec:
+    podSelector:
+        matchLabels:
+            com.docker.compose.network.closeshave-network: "true"
+    policyTypes:
+        - Ingress
+        - Egress
+    ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                    com.docker.compose.network.closeshave-network: "true"
+    egress:
+        - to:
+            - podSelector:
+                matchLabels:
+                    com.docker.compose.network.closeshave-network: "true"

@@ -193,10 +193,116 @@
   padding: 0.5rem;
 }
 
-.suggestion-item:hover {
+.suggestion-item:hover,
+.suggestion-item[aria-selected='true'] {
   background: rgba(255, 239, 0, 0.1);
   border-left: 3px solid var(--cp-yellow);
   color: var(--cp-yellow);
+}
+
+.clear-filters-button,
+.merchant-selection-button {
+  min-width: 120px;
+  font-size: 0.85rem;
+  padding: 0.5rem 1rem;
+}
+
+.merchant-selection-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.5rem;
+  background: var(--bg-panel);
+  border: 2px solid var(--cp-cyan);
+  padding: 1rem;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(1, 253, 254, 0.3);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.merchant-selection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--dark-border);
+  color: var(--cp-cyan);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.9rem;
+}
+
+.merchant-selection-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.merchant-action-button {
+  padding: 0.25rem 0.75rem;
+  background: var(--bg-dark);
+  border: 1px solid var(--cp-cyan);
+  color: var(--text-primary);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.merchant-action-button:hover {
+  background: var(--cp-cyan);
+  color: var(--bg-black);
+  box-shadow: 0 0 10px rgba(1, 253, 254, 0.5);
+}
+
+.merchant-checkboxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.75rem;
+}
+
+.merchant-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+}
+
+.merchant-checkbox-label:hover {
+  background: rgba(1, 253, 254, 0.1);
+  color: var(--cp-cyan);
+}
+
+.merchant-checkbox-label input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--cp-cyan);
+  cursor: pointer;
+}
+
+.merchant-checkbox-label input[type='checkbox']:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 @media (max-width: 768px) {
@@ -215,5 +321,19 @@
 
   .filter-input {
     width: 100%;
+  }
+
+  .merchant-selection-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    max-height: 70vh;
+  }
+
+  .merchant-checkboxes {
+    grid-template-columns: 1fr;
   }
 }
