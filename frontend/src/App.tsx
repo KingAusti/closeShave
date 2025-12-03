@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import SearchBar from './components/SearchBar'
 import ResultsGrid from './components/ResultsGrid'
 import MatrixText from './components/MatrixText'
