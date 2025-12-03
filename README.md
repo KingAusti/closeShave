@@ -1,137 +1,76 @@
-# CloseShave - Web Scraper PWA
+# 🦾 CloseShave - Cyberpunk Deal Hunter
 
-A comprehensive web scraper Progressive Web Application that searches across major merchant sites to find the cheapest products with a Matrix/Cyberpunk aesthetic UI.
+> *Wake up, Samurai. We have deals to burn.*
 
-## Features
+A high-tech, **Matrix/Cyberpunk-themed** Progressive Web Application (PWA) that hacks into the mainframe of major merchant sites to extract the absolute lowest prices. Now powered by **DuckDuckGo** for stealthy deal reconnaissance.
 
-- 🔍 Search products across Amazon, eBay, Walmart, Target, Best Buy, and Newegg
-- 💰 Price comparison with shipping and tax calculation based on your location
-- 🎨 Matrix/Cyberpunk themed UI with neon effects and glitch animations
-- 📱 Progressive Web App - installable and works offline
-- ⚡ Fast hybrid scraping (requests + Playwright)
-- 💾 SQLite caching for faster results
-- 🖼️ Image proxying with direct links
-- 📊 Out of stock indicators
+![Cyberpunk UI](https://img.shields.io/badge/Style-Cyberpunk-00f3ff?style=for-the-badge)
+![Status](https://img.shields.io/badge/System-ONLINE-00ff41?style=for-the-badge)
+![Docker](https://img.shields.io/badge/Container-SECURE-ff00ff?style=for-the-badge)
 
-## Quick Start
+## ⚡ System Capabilities
 
-### 🚀 Easy Installation (Docker Hub - Recommended)
+- **🔍 Multi-Vector Search**: Infiltrate Amazon, eBay, Walmart, Target, Best Buy, Newegg, and **DuckDuckGo Deals**.
+- **🦆 Stealth Mode**: Use the new "Search Deals" toggle to leverage DuckDuckGo for finding hidden sales.
+- **💰 Neural Price Analysis**: Automatic calculation of shipping and tax based on your geolocation.
+- **🎨 Netrunner UI**: Immersive Matrix/Cyberpunk interface with neon effects, glitch animations, and terminal aesthetics.
+- **🛡️ Error Interceptors**: Advanced modal pop-ups for system diagnostics and error handling.
+- **📱 Offline Protocol**: Fully functional PWA that works even when the grid is down.
+- **⚡ Hybrid Extraction**: Combines high-speed requests with Playwright for rendering heavy JS sites.
+- **💾 Data Cache**: SQLite caching layer for instant data retrieval.
 
-The easiest way to get started is using pre-built Docker images:
+## 🚀 Quick Start: Jack In
 
-> **Note for maintainers:** Before sharing, replace `YOUR_USERNAME` with your actual GitHub username in the URLs below.
+### 🐳 Docker Deployment (Recommended)
 
-**Option 1: One-line install script**
-```bash
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/closeshave/main/scripts/install-public.sh | bash
-```
-
-**Option 2: Manual Docker Compose**
-```bash
-# Download the public compose file
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/closeshave/main/docker-compose.public.yml -o docker-compose.yml
-
-# Start the application
-docker-compose up -d
-```
-
-That's it! The app will be available at:
-- Frontend: `http://localhost`
-- Backend API: `http://localhost:8000`
-
-**Useful commands:**
-```bash
-# View logs
-docker-compose logs -f
-
-# Stop services
-docker-compose down
-
-# Update to latest version
-docker-compose pull && docker-compose up -d
-```
-
-### 🛠️ Development Setup (Build from Source)
-
-If you want to build from source or contribute:
+Initialize the system using Docker containers. This is the cleanest way to run the stack.
 
 ```bash
 # Clone the repository
 git clone https://github.com/YOUR_USERNAME/closeshave.git
 cd closeshave
 
-# Start with Docker Compose (builds images locally)
-docker-compose up
+# Build and deploy the stack
+docker-compose -f docker-compose.dev.yml up --build
 ```
 
-### 💻 Local Development
+The system will be accessible at:
+- **Frontend Interface**: `http://localhost:5173`
+- **Backend Mainframe**: `http://localhost:8000`
 
-**Option 1: Docker with Hot Reload (Recommended for Development)**
+### 🛠️ Manual Override (Local Dev)
 
-For development with automatic code reloading:
-
-```bash
-# Start with development Docker Compose (hot reload enabled)
-docker-compose -f docker-compose.dev.yml up
-```
-
-This will:
-- Mount your source code as volumes
-- Enable hot reload for both backend and frontend
-- Backend restarts automatically on code changes
-- Frontend uses Vite HMR for instant updates
-
-Access:
-- Frontend: http://localhost:5173
-- Backend: http://localhost:8000
-
-**Option 2: Local Development (No Docker)**
-
-If you prefer running locally:
+If you prefer to run the binaries directly on your local machine:
 
 ```bash
 # Install dependencies
 ./scripts/install.sh    # Mac/Linux
 .\scripts\install.ps1   # Windows
 
-# Start the app
+# Initiate startup sequence
 ./scripts/start.sh      # Mac/Linux
-.\start.bat              # Windows
+.\start.bat             # Windows
 ```
 
-## Configuration
+## ⚙️ System Configuration
 
-Edit `backend/config/settings.json` to customize:
-- Enabled merchants
-- Request delays
-- Cache TTL
-- IP geolocation API key
+Access the mainframe settings at `backend/config/settings.json` to customize your rig:
 
-When using Docker, edit the file and restart:
-```bash
-docker-compose restart backend
-```
+- **Merchants**: Enable/disable specific target sites (including `duckduckgo`).
+- **Scraping Protocols**: Adjust request delays and timeouts to avoid detection.
+- **Geolocation**: Configure IP geolocation provider.
 
-## Project Structure
+## 📂 Architecture
 
-- `backend/` - Python FastAPI server with scrapers
-- `frontend/` - React + Vite PWA
-- `scripts/` - Installation and startup scripts
-- `docker-compose.yml` - Docker Compose configuration
-- `backend/Dockerfile` - Backend container definition
-- `frontend/Dockerfile` - Frontend container definition
+- `backend/` - **The Core**: Python FastAPI server with advanced scrapers.
+- `frontend/` - **The Interface**: React + Vite PWA with cyberpunk styling.
+- `scripts/` - **Executables**: Installation and startup scripts.
+- `docker-compose.yml` - **Container Config**: Docker orchestration.
 
-## Deployment
+## 🤝 Contributing
 
-### Publishing to Docker Hub
+Join the resistance. Fork the repo, hack the code, and submit a pull request.
 
-To publish your own images to Docker Hub for easy distribution, see [DEPLOY.md](DEPLOY.md).
+## 📄 License
 
-### Production Deployment
-
-For production deployment options, see [DOCKER.md](DOCKER.md).
-
-## License
-
-MIT
-
+MIT - Free for all netrunners.

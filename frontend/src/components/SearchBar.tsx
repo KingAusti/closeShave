@@ -16,6 +16,7 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
   const [maxPrice, setMaxPrice] = useState('')
   const [brand, setBrand] = useState('')
   const [includeOutOfStock, setIncludeOutOfStock] = useState(true)
+  const [searchDeals, setSearchDeals] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(false)
   const suppressAutoShowRef = useRef(false)
 
@@ -60,6 +61,7 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
       max_price: maxPrice ? parseFloat(maxPrice) : undefined,
       brand: brand || undefined,
       include_out_of_stock: includeOutOfStock,
+      merchants: searchDeals ? ['duckduckgo'] : undefined,
     })
   }
 
@@ -247,6 +249,16 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
               onChange={e => setIncludeOutOfStock(e.target.checked)}
             />
             Include Out of Stock
+          </label>
+        </div>
+        <div className="filter-group checkbox-group">
+          <label>
+            <input
+              type="checkbox"
+              checked={searchDeals}
+              onChange={e => setSearchDeals(e.target.checked)}
+            />
+            Search Deals (DuckDuckGo)
           </label>
         </div>
       </div>

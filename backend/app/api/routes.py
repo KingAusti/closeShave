@@ -28,6 +28,7 @@ from app.scrapers import (
     NeweggScraper,
     TargetScraper,
     WalmartScraper,
+    DuckDuckGoScraper,
 )
 from app.utils.database import db
 from app.utils.geolocation import geolocation_service
@@ -39,7 +40,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 # Available merchants
-AVAILABLE_MERCHANTS = ["amazon", "ebay", "walmart", "target", "bestbuy", "newegg"]
+AVAILABLE_MERCHANTS = ["amazon", "ebay", "walmart", "target", "bestbuy", "newegg", "duckduckgo"]
 
 # Scraper mapping
 SCRAPERS = {
@@ -49,6 +50,7 @@ SCRAPERS = {
     "target": TargetScraper,
     "bestbuy": BestBuyScraper,
     "newegg": NeweggScraper,
+    "duckduckgo": DuckDuckGoScraper,
 }
 
 
