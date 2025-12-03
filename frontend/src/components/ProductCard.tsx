@@ -16,9 +16,9 @@ export default function ProductCard({ product }: ProductCardProps) {
     : ''
 
   return (
-    <div className={`product-card ${isOutOfStock ? 'out-of-stock' : ''}`}>
+    <article className={`product-card ${isOutOfStock ? 'out-of-stock' : ''}`} aria-label={`Product: ${product.title}`}>
       {isOutOfStock && (
-        <div className="out-of-stock-badge">
+        <div className="out-of-stock-badge" role="status" aria-label="Out of stock">
           <GlitchEffect text="OUT OF STOCK" />
         </div>
       )}
@@ -28,12 +28,15 @@ export default function ProductCard({ product }: ProductCardProps) {
           src={imageUrl || product.direct_image_url}
           alt={product.title}
           className="product-image"
+          loading="lazy"
           onError={e => {
             // eslint-disable-next-line no-extra-semi
             ;(e.target as HTMLImageElement).src = product.direct_image_url
           }}
         />
-        <div className="merchant-badge">{product.merchant.toUpperCase()}</div>
+        <div className="merchant-badge" aria-label={`Available on ${product.merchant}`}>
+          {product.merchant.toUpperCase()}
+        </div>
       </div>
 
       <div className="product-info">
@@ -68,12 +71,13 @@ export default function ProductCard({ product }: ProductCardProps) {
         <button
           className="product-link-button neon-button"
           onClick={() => window.open(product.product_url, '_blank')}
+          aria-label={`View ${product.title} on ${product.merchant}`}
         >
           VIEW ON {product.merchant.toUpperCase()}
         </button>
 
         {showDetails && (
-          <div className="product-details">
+          <div id="product-details" className="product-details" role="region" aria-label="Product details">
             {product.brand && (
               <p>
                 <strong>Brand:</strong> {product.brand}
@@ -90,7 +94,12 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         )}
 
-        <button className="details-toggle" onClick={() => setShowDetails(!showDetails)}>
+        <button
+          className="details-toggle"
+          onClick={() => setShowDetails(!showDetails)}
+          aria-expanded={showDetails}
+          aria-controls="product-details"
+        >
           {showDetails ? 'Hide Details' : 'Show Details'}
         </button>
       </div>

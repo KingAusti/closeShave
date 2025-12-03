@@ -1,0 +1,62 @@
+#! backend-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: backend
+    namespace: closeshave-1
+    labels:
+        com.docker.compose.project: closeshave-1
+        com.docker.compose.service: backend
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: closeshave-1
+            com.docker.compose.service: backend
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: closeshave-1
+                com.docker.compose.service: backend
+                com.docker.compose.network.closeshave-network: "true"
+        spec:
+            restartPolicy: unless-stopped
+            containers:
+                - name: closeshave-backend
+                  image: closeshave-1-backend
+                  imagePullPolicy: IfNotPresent
+                  env:
+                    - name: PORT
+                      value: "8000"
+                    - name: PYTHONUNBUFFERED
+                      value: "1"
+                  livenessProbe:
+                    exec:
+                        command: ['python -c import httpx; httpx.get(''http://localhost:8000/'')']
+                    periodSeconds: 30
+                    initialDelaySeconds: 10
+                    timeoutSeconds: 10
+                    failureThreshold: 3
+                  ports:
+                    - name: backend-8000
+                      containerPort: 8000
+                  volumeMounts:
+                    - name: app-data
+                      mountPath: /app/data
+                    - name: app-logs
+                      mountPath: /app/logs
+                    - name: app-config
+                      mountPath: /app/config
+            volumes:
+                - name: app-data
+                  hostPath:
+                    path: /Users/admin/Documents/code/closeShave-1/backend/data
+                - name: app-logs
+                  hostPath:
+                    path: /Users/admin/Documents/code/closeShave-1/backend/logs
+                - name: app-config
+                  hostPath:
+                    path: /Users/admin/Documents/code/closeShave-1/backend/config
