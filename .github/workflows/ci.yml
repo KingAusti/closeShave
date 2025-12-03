@@ -33,15 +33,21 @@ jobs:
 
       - name: Run Ruff check
         working-directory: ./backend
-        run: uv run ruff check .
+        run: |
+          source .venv/bin/activate
+          ruff check .
 
       - name: Run Ruff format check
         working-directory: ./backend
-        run: uv run ruff format --check .
+        run: |
+          source .venv/bin/activate
+          ruff format --check .
 
       - name: Run MyPy type check
         working-directory: ./backend
-        run: uv run mypy app || true  # Non-blocking for now, but logs issues
+        run: |
+          source .venv/bin/activate
+          mypy app || true  # Non-blocking for now, but logs issues
 
   backend-security:
     name: Backend Security Scan
@@ -70,8 +76,9 @@ jobs:
       - name: Run Bandit security scan
         working-directory: ./backend
         run: |
-          uv run bandit -r app -f json -o bandit-report.json || true
-          uv run bandit -r app
+          source .venv/bin/activate
+          bandit -r app -f json -o bandit-report.json || true
+          bandit -r app
 
   backend-test:
     name: Backend Tests
@@ -99,7 +106,9 @@ jobs:
 
       - name: Run pytest
         working-directory: ./backend
-        run: uv run pytest -v
+        run: |
+          source .venv/bin/activate
+          pytest -v
 
   backend-build:
     name: Backend Build Check
