@@ -5,7 +5,8 @@
     "walmart": true,
     "target": true,
     "bestbuy": true,
-    "newegg": true
+    "newegg": true,
+    "duckduckgo": true
   },
   "scraping": {
     "request_delay": 1.0,
@@ -39,4 +40,3 @@
     "timeout": 10
   }
 }
-

@@ -3,6 +3,7 @@ import SearchBar from './components/SearchBar'
 import ResultsGrid from './components/ResultsGrid'
 import MatrixText from './components/MatrixText'
 import ErrorBoundary from './components/ErrorBoundary'
+import Modal from './components/Modal'
 import { useScraper } from './hooks/useScraper'
 import type { Product, SearchRequest } from './types'
 import './styles/cyberpunk.css'
@@ -11,6 +12,7 @@ function App() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
   const { searchProducts } = useScraper()
 
   const handleSearch = async (query: string, filters: Partial<SearchRequest>) => {
@@ -22,6 +24,7 @@ function App() {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to search products'
       setError(errorMessage)
+      setModalOpen(true)
       setProducts([])
     } finally {
       setLoading(false)
@@ -44,7 +47,14 @@ function App() {
 
           <SearchBar onSearch={handleSearch} loading={loading} />
 
-          {error && <div className="error-message">{error}</div>}
+          <Modal
+            isOpen={modalOpen}
+            onClose={() => setModalOpen(false)}
+            title="Search Error"
+            type="error"
+          >
+            {error}
+          </Modal>
 
           <ResultsGrid products={products} loading={loading} />
         </div>
