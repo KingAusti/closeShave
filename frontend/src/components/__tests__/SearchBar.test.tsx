@@ -20,7 +20,7 @@ describe('SearchBar', () => {
     render(<SearchBar onSearch={mockOnSearch} loading={false} />)
 
     const searchInput = screen.getByPlaceholderText(/search/i)
-    const submitButton = screen.getByRole('button', { name: /search/i })
+    const submitButton = screen.getByRole('button', { name: /^search for products$/i })
 
     fireEvent.change(searchInput, { target: { value: 'laptop' } })
     fireEvent.click(submitButton)
@@ -38,7 +38,7 @@ describe('SearchBar', () => {
   it('should not call onSearch with empty query', () => {
     render(<SearchBar onSearch={mockOnSearch} loading={false} />)
 
-    const submitButton = screen.getByRole('button', { name: /search/i })
+    const submitButton = screen.getByRole('button', { name: /^search for products$/i })
     fireEvent.click(submitButton)
 
     expect(mockOnSearch).not.toHaveBeenCalled()
@@ -47,7 +47,7 @@ describe('SearchBar', () => {
   it('should disable submit button when loading', () => {
     render(<SearchBar onSearch={mockOnSearch} loading={true} />)
 
-    const submitButton = screen.getByRole('button', { name: /search/i })
+    const submitButton = screen.getByRole('button', { name: /^searching products$/i })
     expect(submitButton).toBeDisabled()
   })
 })

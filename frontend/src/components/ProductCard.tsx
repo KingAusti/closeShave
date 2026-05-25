@@ -103,6 +103,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           {showDetails ? 'Hide Details' : 'Show Details'}
         </button>
       </div>
-    </div>
+    </article>
   )
 }
