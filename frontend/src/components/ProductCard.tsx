@@ -16,7 +16,10 @@ export default function ProductCard({ product }: ProductCardProps) {
     : ''
 
   return (
-    <article className={`product-card ${isOutOfStock ? 'out-of-stock' : ''}`} aria-label={`Product: ${product.title}`}>
+    <article
+      className={`product-card ${isOutOfStock ? 'out-of-stock' : ''}`}
+      aria-label={`Product: ${product.title}`}
+    >
       {isOutOfStock && (
         <div className="out-of-stock-badge" role="status" aria-label="Out of stock">
           <GlitchEffect text="OUT OF STOCK" />
@@ -77,7 +80,12 @@ export default function ProductCard({ product }: ProductCardProps) {
         </button>
 
         {showDetails && (
-          <div id="product-details" className="product-details" role="region" aria-label="Product details">
+          <div
+            id="product-details"
+            className="product-details"
+            role="region"
+            aria-label="Product details"
+          >
             {product.brand && (
               <p>
                 <strong>Brand:</strong> {product.brand}

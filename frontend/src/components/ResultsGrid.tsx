@@ -12,7 +12,12 @@ interface ResultsGridProps {
 
 type SortOption = 'price-low' | 'price-high' | 'rating' | 'newest'
 
-export default function ResultsGrid({ products, loading, searchMetadata, searchingMerchants }: ResultsGridProps) {
+export default function ResultsGrid({
+  products,
+  loading,
+  searchMetadata,
+  searchingMerchants,
+}: ResultsGridProps) {
   const [sortBy, setSortBy] = useState<SortOption>('price-low')
   const [filterMerchant, setFilterMerchant] = useState<string>('all')
   const [filterAvailability, setFilterAvailability] = useState<string>('all')
