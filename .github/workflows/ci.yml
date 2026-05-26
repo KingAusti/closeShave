@@ -25,9 +25,13 @@ jobs:
       - name: Install Python
         run: uv python install 3.11
 
+      - name: Create virtual environment
+        working-directory: ./backend
+        run: uv venv
+
       - name: Install dependencies
         working-directory: ./backend
-        run: uv pip install --system -e ".[dev]"
+        run: uv pip install -e ".[dev]"
 
       - name: Run Ruff check
         working-directory: ./backend
@@ -59,9 +63,13 @@ jobs:
       - name: Install Python
         run: uv python install 3.11
 
+      - name: Create virtual environment
+        working-directory: ./backend
+        run: uv venv
+
       - name: Install dependencies
         working-directory: ./backend
-        run: uv pip install --system -e ".[dev]"
+        run: uv pip install -e ".[dev]"
 
       - name: Run Bandit security scan
         working-directory: ./backend
@@ -87,9 +95,13 @@ jobs:
       - name: Install Python
         run: uv python install 3.11
 
+      - name: Create virtual environment
+        working-directory: ./backend
+        run: uv venv
+
       - name: Install dependencies
         working-directory: ./backend
-        run: uv pip install --system -e ".[dev]"
+        run: uv pip install -e ".[dev]"
 
       - name: Run pytest
         working-directory: ./backend
@@ -113,9 +125,13 @@ jobs:
       - name: Install Python
         run: uv python install 3.11
 
+      - name: Create virtual environment
+        working-directory: ./backend
+        run: uv venv
+
       - name: Install dependencies
         working-directory: ./backend
-        run: uv pip install --system -e ".[dev]"
+        run: uv pip install -e ".[dev]"
 
       - name: Verify backend can start
         working-directory: ./backend
