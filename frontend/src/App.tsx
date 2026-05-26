@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef } from 'react'
 import SearchBar from './components/SearchBar'
 import ResultsGrid from './components/ResultsGrid'
 import MatrixText from './components/MatrixText'
@@ -26,26 +26,34 @@ function App() {
     setLastSearchQuery(query)
     setLastSearchFilters(filters)
     setSearchMetadata(null)
-    
+
     // Set merchants being searched for progress indicator
     if (filters.merchants && filters.merchants.length > 0) {
       setSearchingMerchants(filters.merchants)
     } else {
       // If no specific merchants, show default list
-      setSearchingMerchants(['amazon', 'ebay', 'walmart', 'target', 'bestbuy', 'newegg', 'duckduckgo'])
+      setSearchingMerchants([
+        'amazon',
+        'ebay',
+        'walmart',
+        'target',
+        'bestbuy',
+        'newegg',
+        'duckduckgo',
+      ])
     }
-    
+
     // Announce search start to screen readers
     if (announcementRef.current) {
       announcementRef.current.textContent = `Searching for ${query}...`
     }
-    
+
     try {
       const results = await searchProducts(query, filters)
       setProducts(results.products || [])
       setSearchMetadata(results)
       setSearchingMerchants([])
-      
+
       // Announce results to screen readers
       if (announcementRef.current) {
         const count = results.products?.length || 0
@@ -55,20 +63,22 @@ function App() {
       setSearchingMerchants([])
       const errorMessage = err instanceof Error ? err.message : 'Failed to search products'
       let userFriendlyMessage = errorMessage
-      
+
       // Make error messages more user-friendly
       if (errorMessage.includes('timeout') || errorMessage.includes('timed out')) {
-        userFriendlyMessage = 'The search took too long. Please try again with a more specific query or fewer merchants.'
+        userFriendlyMessage =
+          'The search took too long. Please try again with a more specific query or fewer merchants.'
       } else if (errorMessage.includes('Network error') || errorMessage.includes('connection')) {
-        userFriendlyMessage = 'Unable to connect to the server. Please check your internet connection and try again.'
+        userFriendlyMessage =
+          'Unable to connect to the server. Please check your internet connection and try again.'
       } else if (errorMessage.includes('validation') || errorMessage.includes('empty')) {
         userFriendlyMessage = 'Please enter a search query to find products.'
       }
-      
+
       setError(userFriendlyMessage)
       setModalOpen(true)
       setProducts([])
-      
+
       // Announce error to screen readers
       if (announcementRef.current) {
         announcementRef.current.textContent = `Search failed: ${userFriendlyMessage}`

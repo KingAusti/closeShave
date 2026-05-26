@@ -99,7 +99,10 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
 
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement
-      if (!target.closest('.merchant-selection-panel') && !target.closest('.merchant-selection-button')) {
+      if (
+        !target.closest('.merchant-selection-panel') &&
+        !target.closest('.merchant-selection-button')
+      ) {
         setShowMerchantSelection(false)
       }
     }
@@ -114,7 +117,7 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
     if (!searchQuery.trim()) return
 
     setShowSuggestions(false)
-    
+
     // Determine which merchants to search
     let merchantsToSearch: string[] | undefined
     if (searchDeals) {
@@ -124,7 +127,7 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
     } else {
       merchantsToSearch = undefined // Search all enabled merchants
     }
-    
+
     onSearch(searchQuery, {
       barcode: barcode || undefined,
       min_price: minPrice ? parseFloat(minPrice) : undefined,
@@ -166,7 +169,10 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
         break
       case 'Enter':
         e.preventDefault()
-        if (selectedSuggestionIndex >= 0 && selectedSuggestionIndex < validationResult!.suggestions.length) {
+        if (
+          selectedSuggestionIndex >= 0 &&
+          selectedSuggestionIndex < validationResult!.suggestions.length
+        ) {
           handleSuggestionClick(validationResult!.suggestions[selectedSuggestionIndex])
         }
         break
@@ -254,9 +260,7 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
             aria-expanded={showSuggestions}
             aria-controls="suggestions-list"
             aria-activedescendant={
-              selectedSuggestionIndex >= 0
-                ? `suggestion-${selectedSuggestionIndex}`
-                : undefined
+              selectedSuggestionIndex >= 0 ? `suggestion-${selectedSuggestionIndex}` : undefined
             }
           />
           {validating && (
@@ -345,9 +349,7 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
                     color: 'var(--text-primary)',
                     transition: 'background 0.2s',
                     background:
-                      selectedSuggestionIndex === index
-                        ? 'rgba(0, 255, 65, 0.1)'
-                        : 'transparent',
+                      selectedSuggestionIndex === index ? 'rgba(0, 255, 65, 0.1)' : 'transparent',
                   }}
                 >
                   {suggestion}
@@ -357,7 +359,9 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
           )}
         </div>
         <div className="barcode-group">
-          <span className="barcode-label" aria-hidden="true">or</span>
+          <span className="barcode-label" aria-hidden="true">
+            or
+          </span>
           <label htmlFor="barcode-input" className="visually-hidden">
             Barcode or UPC
           </label>
@@ -495,9 +499,7 @@ export default function SearchBar({ onSearch, loading }: SearchBarProps) {
                       disabled={searchDeals && merchant.name !== 'duckduckgo'}
                       aria-label={`Search ${merchant.name}`}
                     />
-                    <span>
-                      {merchant.name.charAt(0).toUpperCase() + merchant.name.slice(1)}
-                    </span>
+                    <span>{merchant.name.charAt(0).toUpperCase() + merchant.name.slice(1)}</span>
                   </label>
                 ))}
               </div>

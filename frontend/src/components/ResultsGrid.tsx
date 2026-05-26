@@ -12,7 +12,12 @@ interface ResultsGridProps {
 
 type SortOption = 'price-low' | 'price-high' | 'rating' | 'newest'
 
-export default function ResultsGrid({ products, loading, searchMetadata, searchingMerchants }: ResultsGridProps) {
+export default function ResultsGrid({
+  products,
+  loading,
+  searchMetadata,
+  searchingMerchants,
+}: ResultsGridProps) {
   const [sortBy, setSortBy] = useState<SortOption>('price-low')
   const [filterMerchant, setFilterMerchant] = useState<string>('all')
   const [filterAvailability, setFilterAvailability] = useState<string>('all')
@@ -50,10 +55,11 @@ export default function ResultsGrid({ products, loading, searchMetadata, searchi
           return a.total_price - b.total_price
         case 'price-high':
           return b.total_price - a.total_price
-        case 'rating':
+        case 'rating': {
           const aRating = a.rating || 0
           const bRating = b.rating || 0
           return bRating - aRating
+        }
         case 'newest':
           // Since we don't have a date field, we'll use merchant_id as a proxy
           return 0

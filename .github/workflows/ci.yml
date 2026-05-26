@@ -21,11 +21,13 @@ jobs:
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v3
-        with:
-          enable-cache: true
 
       - name: Install Python
         run: uv python install 3.11
+
+      - name: Create virtual environment
+        working-directory: ./backend
+        run: uv venv
 
       - name: Install dependencies
         working-directory: ./backend
@@ -57,11 +59,13 @@ jobs:
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v3
-        with:
-          enable-cache: true
 
       - name: Install Python
         run: uv python install 3.11
+
+      - name: Create virtual environment
+        working-directory: ./backend
+        run: uv venv
 
       - name: Install dependencies
         working-directory: ./backend
@@ -87,11 +91,13 @@ jobs:
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v3
-        with:
-          enable-cache: true
 
       - name: Install Python
         run: uv python install 3.11
+
+      - name: Create virtual environment
+        working-directory: ./backend
+        run: uv venv
 
       - name: Install dependencies
         working-directory: ./backend
@@ -115,11 +121,13 @@ jobs:
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v3
-        with:
-          enable-cache: true
 
       - name: Install Python
         run: uv python install 3.11
+
+      - name: Create virtual environment
+        working-directory: ./backend
+        run: uv venv
 
       - name: Install dependencies
         working-directory: ./backend
